@@ -4,8 +4,10 @@ class User < ActiveRecord::Base
 
   attr_accessible :avatar , :avatar_content_type, :avatar_file_name, :avatar_file_size, :avatar_updated_at
 
-  has_many :meet_locations
-  has_many :locations, :through => :meet_locations
+  #has_many :meet_locations
+  #has_many :locations, :through => :meet_locations
+
+  has_one :location
 
   #report event...
   has_many :report_events

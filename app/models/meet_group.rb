@@ -1,3 +1,3 @@
 class MeetGroup < ActiveRecord::Base
-  attr_accessible :senderID
+  attr_accessible :user_id, :stanger_id, :location_id
 end

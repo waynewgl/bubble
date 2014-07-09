@@ -326,6 +326,63 @@ class UserController < ApplicationController
     end
   end
 
+  api :POST, "/user/recordUserLocation", "用户更新位置信息, 一个用户只有一个唯一位置"
+
+  param :longitude, String, "用户位置longitude", :required => true
+  param :latitude, String, "用户位置latitude", :required => true
+  param :start_time, String, "用户位置记录时间", :required => true
+  param :user_id, String, "用户 id", :required => true
+  param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+
+  description <<-EOS
+
+
+  EOS
+  def recordUserLocation
+
+    msg = Hash.new
+
+    if params[:longitude].nil? || params[:latitude].nil?  || params[:user_id].nil?   || params[:passport_token].nil?   || params[:start_time].nil?
+      arr_params = ["longitude", "latitude", "user_id", "passport_token", "start_time"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供longitude 和 latitude 位置信息 和 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkAndReturnUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if !checkUser.nil?
+
+      if checkUser.location.nil?
+
+        userLocation = Location.new
+      else
+
+        userLocation = checkUser.location
+      end
+
+      userLocation.latitude =  params[:latitude]
+      userLocation.longitude =  params[:longitude]
+      userLocation.content =  params[:content]
+      start_date = Time.parse(params[:start_time])
+      userLocation.start_date = start_date
+      userLocation.user_id =  params[:user_id]
+
+      if userLocation.save
+
+        msg[:response] =CodeHelper.CODE_SUCCESS
+        msg[:location_id] = userLocation.id
+        msg[:description] = "操作成功, 储存用户位置"
+        render :json =>  msg
+      else
+
+        msg[:response] =CodeHelper.CODE_FAIL
+        msg[:description] = "操作失败, 储存用户位置不成功"
+        render :json =>  msg
+      end
+    end
+  end
 
   #@events = Event.where(:id => params[:event_id].to_i)
   ##@date = @events.first.start.localtime
@@ -410,7 +467,7 @@ class UserController < ApplicationController
 
 
   #EOS
-  api :GET, "/user/usersLocationMet", "返回同一时间段被记录的用户location"
+  api :GET, "/user/usersLocationMet", "返回同一时间段内在活动的用户location"
 
   param :user_id, String, "用户 id", :required => true
   param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
@@ -439,10 +496,10 @@ class UserController < ApplicationController
     if checkUser
 
       meet_date = Time.parse(params[:recorded_at])
-      meet_date_max = meet_date + 1.hour
-      meet_date_min = meet_date - 1.hour
+      meet_date_max = meet_date + 0.5.hour
+      meet_date_min = meet_date - 0.5.hour
 
-      userMetLocations = Location.where("user_id != ? and start_date > ?  and start_date < ?", params[:user_id], meet_date_min, meet_date_max)
+      userMetLocations = Location.where("user_id != ? and start_date >= ?  and start_date <= ?", params[:user_id], meet_date_min, meet_date_max)
 
       if userMetLocations.nil?
 
@@ -459,9 +516,7 @@ class UserController < ApplicationController
         render :json =>  msg
         return
       end
-
     end
-
   end
 
   api :GET, "/user/findSpecifcUsers", "根据 user  ids 返回一个或者多个用户信息 "

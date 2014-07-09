@@ -27,6 +27,30 @@ class ApplicationController < ActionController::Base
 
     return true
   end
+  def checkAndReturnUserExistBeforeOperationStart(user_id, msg)
+
+    user = User.find_by_id(user_id)
+
+    if user.nil?
+
+      msg[:response] =CodeHelper.CODE_USER_NOT_EXIST
+      msg[:description] = "用户不存在"
+      render :json =>  msg
+      return
+    else
+
+      if user.passport_token !=  params[:passport_token]
+
+        msg[:response] =CodeHelper.CODE_TOKEN_NOT_EXIST
+        msg[:description] = "用户 passport token 不存在或者失效"
+        render :json =>  msg
+        return
+      end
+    end
+
+    return user
+  end
+
 
 
 
