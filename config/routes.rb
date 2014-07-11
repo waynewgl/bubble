@@ -60,6 +60,7 @@ Meets::Application.routes.draw do
   match 'user/usersLocationMet' => 'user#usersLocationMet'
   match 'user/findSpecifcUsers' => 'user#findSpecifcUsers'
   match 'user/recordUserLocation' => 'user#recordUserLocation'
+  match 'user/addUsersMeetLocation' => 'user#addUsersMeetLocation'
 
 
 

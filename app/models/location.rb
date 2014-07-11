@@ -17,7 +17,8 @@ class Location < ActiveRecord::Base
         latitude: self.latitude,
         recorded_at: self.start_date.localtime,
         content: self.content,
-        user_id: self.user_id
+        user_id: self.user_id,
+        user: self.user
     }
   end
 

@@ -340,6 +340,8 @@ class UserController < ApplicationController
   EOS
   def recordUserLocation
 
+    logger.info "do we get format  date #{Date.parse(params[:start_time])}  and time  #{Time.parse(params[:start_time])}  "
+
     msg = Hash.new
 
     if params[:longitude].nil? || params[:latitude].nil?  || params[:user_id].nil?   || params[:passport_token].nil?   || params[:start_time].nil?
@@ -466,12 +468,108 @@ class UserController < ApplicationController
   #description <<-EOS
 
 
+  def returnMeetHistory
+
+
+
+  end
+
+
   #EOS
+  api :GET, "/user/addUsersMeetLocation", "添加用户周边遇到的用户"
+
+  param :user_id, String, "用户 id", :required => true
+  param :stranger_id, String, "遇见的用户 id", :required => true
+  param :address, String, "遇见的用户位置地址", :required => true
+  param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+  param :meet_time, String, "用户的位置所被记录的时间， （确保被计算距离的用户，是处于同一时间点）. e.g 2014-07-10 9:12", :required => true
+  description <<-EOS
+
+
+  EOS
+  def addUsersMeetLocation
+
+    msg = Hash.new
+
+    #logger.info "get distance #{distance([46.3625, 15.114444],[46.055556, 14.508333])}"
+
+    if params[:user_id].nil?  || params[:stranger_id].nil? || params[:address].nil? ||  params[:meet_time].nil?  || params[:passport_token].nil?#|| params[:longitude].nil?  || params[:latitude].nil?
+
+      arr_params = ["user_id", "stranger_id", "meet_time", "address",  "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供必要参数"
+      render :json =>  msg.to_json
+      return
+    end
+
+    isAddingNewMeet = false
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      #meet_date = Time.parse(params[:recorded_at])
+      #meet_date_max = meet_date + 0.5.hour
+      #meet_date_min = meet_date - 0.5.hour
+      meet_date  = Date.parse(params[:meet_time])
+
+      #checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and Date(meet_time) = ?", params[:user_id], params[:stranger_id], params[:stranger_id]).first
+
+      checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and address = ?", params[:user_id], params[:stranger_id], params[:address]).first
+
+      if !checkUsersExist.nil?
+
+        logger.info "meeting date #{meet_date}  and meet time  #{checkUsersExist.meet_time.localtime.to_date}"
+
+        if  meet_date != checkUsersExist.meet_time.localtime.to_date   #如果两用户已经当天遇到过一次
+
+          isAddingNewMeet = true
+        else
+          isAddingNewMeet = false
+        end
+      else
+
+        isAddingNewMeet = true
+      end
+
+      if isAddingNewMeet
+
+        checkUsersExist =  MeetGroup.new
+        checkUsersExist.user_id =  params[:user_id]
+        checkUsersExist.stranger_id =  params[:stranger_id]
+        checkUsersExist.address =  params[:address]
+        checkUsersExist.meet_time =  meet_date
+
+        if checkUsersExist.save
+
+          msg[:response] =CodeHelper.CODE_SUCCESS
+          msg[:description] = "用户偶遇成功"
+          msg[:userMet_Location] = checkUsersExist.id
+          render :json =>  msg
+          return
+        else
+
+          msg[:response] =CodeHelper.CODE_FAIL
+          msg[:description] = "用户偶遇操作失误"
+          render :json =>  msg
+          return
+        end
+      else
+
+        msg[:response] =CodeHelper.CODE_FAIL
+        msg[:description] = "用户已经在这位置偶遇过"
+        render :json =>  msg
+        return
+      end
+    end
+  end
+
+
   api :GET, "/user/usersLocationMet", "返回同一时间段内在活动的用户location"
 
   param :user_id, String, "用户 id", :required => true
   param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
-  param :recorded_at, String, "用户的位置所被记录的时间， （确保被计算距离的用户，是处于同一时间点）. e.g 2014-07-10 9:12", :required => true
+  param :current_time, String, "用户的位置所被记录的时间， （确保被计算距离的用户，是处于同一时间点）. e.g 2014-07-10 9:12", :required => true
   description <<-EOS
 
 
@@ -482,42 +580,40 @@ class UserController < ApplicationController
 
     #logger.info "get distance #{distance([46.3625, 15.114444],[46.055556, 14.508333])}"
 
-    if params[:user_id].nil?   || params[:recorded_at].nil?  || params[:passport_token].nil?#|| params[:longitude].nil?  || params[:latitude].nil?
+    if params[:user_id].nil? || params[:passport_token].nil? || params[:current_time].nil?
 
-      arr_params = ["user_id", "recorded_at", "passport_token"]
+      arr_params = ["user_id", "passport_token", "current_time"]
       msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
       msg[:description] = "需要提供必要参数"
       render :json =>  msg.to_json
       return
     end
 
-    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+    currentTime =  Time.parse(params[:current_time]).localtime
+    time_from  = currentTime - 0.5.hour
+    time_to  = currentTime + 0.5.hour
 
-    if checkUser
+    usersAround = Location.where("user_id != ?  and start_date >= ?  and start_Date <= ? ", params[:user_id], time_from, time_to)
 
-      meet_date = Time.parse(params[:recorded_at])
-      meet_date_max = meet_date + 0.5.hour
-      meet_date_min = meet_date - 0.5.hour
+    if usersAround.nil?
 
-      userMetLocations = Location.where("user_id != ? and start_date >= ?  and start_date <= ?", params[:user_id], meet_date_min, meet_date_max)
+      msg[:response] = CodeHelper.CODE_FAIL
+      msg[:description] = "没有周边用户"
+      msg[:userMet_Location] = ""
+      render :json =>  msg.to_json
+      return
 
-      if userMetLocations.nil?
+    else
 
-        msg[:response] =CodeHelper.CODE_FAIL
-        msg[:userMet_Location] = ""
-        msg[:description] = "用户偶遇对象返回失败"
-        render :json =>  msg
-        return
-      else
-
-        msg[:response] =CodeHelper.CODE_SUCCESS
-        msg[:description] = "用户偶遇对象返回成功"
-        msg[:userMet_Location] = userMetLocations
-        render :json =>  msg
-        return
-      end
+      msg[:response] = CodeHelper.CODE_SUCCESS
+      msg[:description] = "需要提供必要参数"
+      msg[:userMet_Location] = usersAround
+      render :json =>  msg.to_json
+      return
     end
+
   end
+
 
   api :GET, "/user/findSpecifcUsers", "根据 user  ids 返回一个或者多个用户信息 "
 

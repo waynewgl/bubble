@@ -1,3 +1,5 @@
+#encoding: UTF-8
+
 class User < ActiveRecord::Base
 
   attr_accessible :UUID
@@ -25,8 +27,7 @@ class User < ActiveRecord::Base
         email: self.email,
         sex: self.sex,
         image_url: self.avatar.url,
-
-        nickname: self.nickname
+        nickname: self.checkNickName
     }
   end
 
@@ -38,6 +39,19 @@ class User < ActiveRecord::Base
     end
   end
 
+
+  def checkNickName
+
+    if self.nickname.nil?
+
+      return "未命名"
+
+    else
+
+      return self.nickname
+    end
+
+  end
 
   def generate_token
     self.passport_token = loop do
