@@ -40,6 +40,21 @@ class User < ActiveRecord::Base
   end
 
 
+  def checkAvatar
+
+    url =  self.avatar.url.to_s
+
+    if  url = '/avatars/original/missing.png'
+
+      return ""
+
+    else
+
+      return url
+    end
+  end
+
+
   def checkNickName
 
     if self.nickname.nil?

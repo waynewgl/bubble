@@ -523,7 +523,7 @@ class UserController < ApplicationController
         checkUsersExist.user_id =  params[:user_id]
         checkUsersExist.stranger_id =  params[:stranger_id]
         checkUsersExist.address =  params[:address]
-        checkUsersExist.meet_time =  meet_date
+        checkUsersExist.meet_time =  Time.parse(params[:meet_time]).localtime
 
         if checkUsersExist.save
 
@@ -600,7 +600,7 @@ class UserController < ApplicationController
   end
 
 
-  api :GET, "/user/historyOfUsersMeet", "根据 user  ids 返回一个或者多个用户信息 "
+  api :GET, "/user/historyOfUsersMeet", "返回指定用户遇到的人"
 
   param :user_id, String, "用户 id， 可以多个用,隔开  e.g. 1,2,3,4,5", :required => true
   param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
@@ -638,18 +638,22 @@ class UserController < ApplicationController
         return
       else
 
-        arr_userIds = Array.new
+        arr_users = Array.new
 
         for userGroup in   meetUsersGroup
 
-          arr_userIds  <<  userGroup.stranger_id
-        end
+          dic_user = Hash.new
 
-        users =  User.where("id in (?)", arr_userIds);
+          user = User.where("id = ?", userGroup.stranger_id).first
+          dic_user[:user] = user
+          dic_user[:meet_address] =  userGroup.address
+          dic_user[:meet_time] =  userGroup.meet_time.localtime
+          arr_users <<   dic_user
+        end
 
         msg[:response] = CodeHelper.CODE_SUCCESS
         msg[:description] = "返回偶遇用户"
-        msg[:users] = users
+        msg[:users] = arr_users
         render :json =>  msg.to_json
         return
       end
