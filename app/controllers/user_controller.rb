@@ -459,21 +459,6 @@ class UserController < ApplicationController
   end
 
 
-  #api :POST, "/user/userMeets", "用户遇见"
-  #
-  #param :sender_id, String, "用户sender_id", :required => true
-  #param :receiver_id, String, "用户receiver_id", :required => true
-  #param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
-  #
-  #description <<-EOS
-
-
-  def returnMeetHistory
-
-
-
-  end
-
 
   #EOS
   api :GET, "/user/addUsersMeetLocation", "添加用户周边遇到的用户"
@@ -606,7 +591,7 @@ class UserController < ApplicationController
     else
 
       msg[:response] = CodeHelper.CODE_SUCCESS
-      msg[:description] = "需要提供必要参数"
+      msg[:description] = "看看你遇到了谁"
       msg[:userMet_Location] = usersAround
       render :json =>  msg.to_json
       return
@@ -615,7 +600,7 @@ class UserController < ApplicationController
   end
 
 
-  api :GET, "/user/findSpecifcUsers", "根据 user  ids 返回一个或者多个用户信息 "
+  api :GET, "/user/historyOfUsersMeet", "根据 user  ids 返回一个或者多个用户信息 "
 
   param :user_id, String, "用户 id， 可以多个用,隔开  e.g. 1,2,3,4,5", :required => true
   param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
@@ -623,7 +608,7 @@ class UserController < ApplicationController
 
 
   EOS
-  def findSpecifcUsers
+  def historyOfUsersMeet
 
     msg = Hash.new
 
@@ -638,23 +623,36 @@ class UserController < ApplicationController
       return
     end
 
-    userIds = params[:user_id].split(/,/)
-    users = User.find_all_by_id(userIds)
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
 
-    if users.count == 0
+    if checkUser
 
-      msg[:response] = CodeHelper.CODE_FAIL
-      msg[:description] = "返回用户信息失败"
-      render :json =>  msg.to_json
-      return
+      meetUsersGroup = MeetGroup.where("user_id = ?", params[:user_id])
 
-    else
+      if meetUsersGroup.nil?
 
-      msg[:response] = CodeHelper.CODE_SUCCESS
-      msg[:description] = "用户信息返回成功"
-      msg[:users] = users
-      render :json =>  msg.to_json
-      return
+        msg[:response] = CodeHelper.CODE_FAIL
+        msg[:description] = "你还没遇见缘分"
+        msg[:users] = ""
+        render :json =>  msg.to_json
+        return
+      else
+
+        arr_userIds = Array.new
+
+        for userGroup in   meetUsersGroup
+
+          arr_userIds  <<  userGroup.stranger_id
+        end
+
+        users =  User.where("id in (?)", arr_userIds);
+
+        msg[:response] = CodeHelper.CODE_SUCCESS
+        msg[:description] = "返回偶遇用户"
+        msg[:users] = users
+        render :json =>  msg.to_json
+        return
+      end
 
     end
 

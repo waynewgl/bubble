@@ -58,7 +58,7 @@ Meets::Application.routes.draw do
   match 'user/recordLocation' => 'user#recordLocation'
   match 'user/report_event' => 'user#report_event'
   match 'user/usersLocationMet' => 'user#usersLocationMet'
-  match 'user/findSpecifcUsers' => 'user#findSpecifcUsers'
+  match 'user/historyOfUsersMeet' => 'user#historyOfUsersMeet'
   match 'user/recordUserLocation' => 'user#recordUserLocation'
   match 'user/addUsersMeetLocation' => 'user#addUsersMeetLocation'
 
