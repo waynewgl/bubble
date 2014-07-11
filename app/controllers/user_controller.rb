@@ -163,7 +163,7 @@ class UserController < ApplicationController
       return
     end
 
-    user = User.where("account = ? and password = ? and uuid = ?", params[:account], Digest::SHA1.hexdigest(params[:password]), params[:device_uuid] ).first
+    user = User.where("account = ? and password = ?", params[:account], Digest::SHA1.hexdigest(params[:password]) ).first
 
     if user.nil?
 
