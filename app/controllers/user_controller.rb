@@ -500,12 +500,14 @@ class UserController < ApplicationController
 
       #checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and Date(meet_time) = ?", params[:user_id], params[:stranger_id], params[:stranger_id]).first
 
+      #检查是否已经存在地址一样的记录
       checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and address = ?", params[:user_id], params[:stranger_id], params[:address]).first
 
       if !checkUsersExist.nil?
 
         logger.info "meeting date #{meet_date}  and meet time  #{checkUsersExist.meet_time.localtime.to_date}"
 
+        #比较该记录是否处于当天， 如果是，则忽略 ， 如果不是， 添加记录
         if  meet_date != checkUsersExist.meet_time.localtime.to_date   #如果两用户已经当天遇到过一次
 
           isAddingNewMeet = true
