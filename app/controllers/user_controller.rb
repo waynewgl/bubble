@@ -375,6 +375,7 @@ class UserController < ApplicationController
 
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:location_id] = userLocation.id
+        msg[:location_address] = userLocation.content
         msg[:description] = "操作成功, 储存用户位置"
         render :json =>  msg
       else
