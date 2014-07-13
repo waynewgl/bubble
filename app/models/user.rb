@@ -2,7 +2,7 @@
 
 class User < ActiveRecord::Base
 
-  attr_accessible :UUID
+  attr_accessible :UUID, :is_loggedin
 
   attr_accessible :avatar , :avatar_content_type, :avatar_file_name, :avatar_file_size, :avatar_updated_at
 
@@ -27,7 +27,9 @@ class User < ActiveRecord::Base
         email: self.email,
         sex: self.sex,
         image_url: self.checkAvatar,
-        nickname: self.checkNickName
+        nickname: self.checkNickName,
+        is_logged: self.is_loggedin
+
     }
   end
 

@@ -105,7 +105,7 @@ class UserController < ApplicationController
       return
     end
 
-    user = User.where("account = ? and password = ?", params[:account], Digest::SHA1.hexdigest(params[:password]) ).first
+    user = User.where("account = ?", params[:account] ).first
 
     if user.nil?
 
@@ -123,21 +123,25 @@ class UserController < ApplicationController
         msg[:user] = new_user
         msg[:description] = "用户注册成功"
         render :json =>  msg.to_json
-
+        return
       else
 
         msg[:response] = CodeHelper.CODE_FAIL
         msg[:description] = "用户注册失败"
         render :json =>  msg.to_json
+        return
       end
     else
 
       msg[:response] = CodeHelper.CODE_FAIL
       msg[:description] = "该用户已经存在，请重新选用其他账号注册"
       render :json =>  msg.to_json
+      return
     end
 
   end
+
+
 
 
   api :GET, "/user/userLogin", "用户登陆"
@@ -171,14 +175,72 @@ class UserController < ApplicationController
       msg[:user] = ""
       msg[:description] = "登陆失败，密码或者用户名错误"
       render :json =>  msg.to_json
+      return
     else
-      msg[:response] = CodeHelper.CODE_SUCCESS
-      user.passport_token = nil
-      msg[:passport_token] =  user.generate_token
-      user.update_attribute(:passport_token, msg[:passport_token] )
-      msg[:user] = user
-      msg[:description] = "登陆成功"
+
+      if user.is_loggedin == "yes"
+
+        msg[:response] = CodeHelper.CODE_FAIL
+        msg[:user] = ""
+        msg[:description] = "登陆失败， 用户已经登陆"
+        render :json =>  msg.to_json
+        return
+
+      else
+
+        msg[:response] = CodeHelper.CODE_SUCCESS
+        user.passport_token = nil
+        msg[:passport_token] =  user.generate_token
+        user.update_attribute(:passport_token, msg[:passport_token] )
+        user.update_attribute("is_loggedin", "yes")
+        msg[:user] = user
+        msg[:description] = "登陆成功"
+        render :json =>  msg.to_json
+        return
+      end
+
+    end
+
+  end
+
+  api :GET, "/user/userLogout", "用户登出"
+
+  param :user_id, String, "用户id", :required => true
+  param :passport_token, String, "用户操作授权码", :required => true
+
+  description <<-EOS
+
+
+  EOS
+  def userLogout
+
+    msg = Hash.new
+
+    if params[:user_id].nil? ||  params[:passport_token].nil?
+
+      arr_params = ["user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需信息..."
       render :json =>  msg.to_json
+      return
+    end
+
+    user = User.find_by_id(params[:user_id])
+
+    if user.nil?
+
+      msg[:response] = CodeHelper.CODE_FAIL
+      msg[:user] = ""
+      msg[:description] = "操作失败"
+      render :json =>  msg.to_json
+      return
+    else
+
+      user.update_attribute("is_loggedin", "no")
+      msg[:response] = CodeHelper.CODE_SUCCESS
+      msg[:description] = "操作成功"
+      render :json =>  msg.to_json
+      return
     end
 
   end
@@ -309,11 +371,13 @@ class UserController < ApplicationController
           msg[:location_id] = userLocation.user_id
           msg[:description] = "操作成功, 储存用户位置"
           render :json =>  msg
+          return
         else
 
           msg[:response] =CodeHelper.CODE_FAIL
           msg[:description] = "操作失败, 储存用户位置不成功"
           render :json =>  msg
+          return
         end
 
       else
@@ -321,6 +385,7 @@ class UserController < ApplicationController
         msg[:response] =CodeHelper.CODE_FAIL
         msg[:description] = "操作失败"
         render :json =>  msg
+        return
       end
 
     end
@@ -378,11 +443,13 @@ class UserController < ApplicationController
         msg[:location_address] = userLocation.content
         msg[:description] = "操作成功, 储存用户位置"
         render :json =>  msg
+        return
       else
 
         msg[:response] =CodeHelper.CODE_FAIL
         msg[:description] = "操作失败, 储存用户位置不成功"
         render :json =>  msg
+        return
       end
     end
   end
@@ -449,12 +516,14 @@ class UserController < ApplicationController
         msg[:response] =CodeHelper.CODE_FAIL
         msg[:description] = "用户足迹返回失败"
         render :json =>  msg
+        return
       else
 
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "用户足迹返回成功"
         msg[:locations] = myLocations
         render :json =>  msg
+        return
       end
     end
   end
@@ -593,9 +662,19 @@ class UserController < ApplicationController
 
     else
 
+      filter_userAround = Array.new
+
+      for lo in usersAround
+
+        if lo.user.is_loggedin == "yes"
+
+          filter_userAround << lo
+        end
+      end
+
       msg[:response] = CodeHelper.CODE_SUCCESS
       msg[:description] = "看看你遇到了谁"
-      msg[:userMet_Location] = usersAround
+      msg[:userMet_Location] = filter_userAround
       render :json =>  msg.to_json
       return
     end
