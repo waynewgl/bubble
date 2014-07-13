@@ -180,6 +180,8 @@ class UserController < ApplicationController
 
       if user.is_loggedin == "yes"
 
+        logger.info "what happended??? #{user.is_loggedin}"
+
         msg[:response] = CodeHelper.CODE_FAIL
         msg[:user] = ""
         msg[:description] = "登陆失败， 用户已经登陆"
@@ -238,7 +240,7 @@ class UserController < ApplicationController
 
       user.update_attribute("is_loggedin", "no")
       msg[:response] = CodeHelper.CODE_SUCCESS
-      msg[:description] = "操作成功"
+      msg[:description] = "用户退出成功"
       render :json =>  msg.to_json
       return
     end
