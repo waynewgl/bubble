@@ -59,7 +59,7 @@ module CodeHelper
   def self.CODE_USER_NOT_EXIST
 
     @response[:code] = "225"
-    @response[:desc] = "用户不存在"
+    @response[:desc] = "登陆失败，用户名或者密码错误"
     return @response
   end
 

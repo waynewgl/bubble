@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
         major: self.major,
         email: self.email,
         sex: self.sex,
-        image_url: self.avatar.url,
+        image_url: self.checkAvatar,
         nickname: self.checkNickName
     }
   end
@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
 
     url =  self.avatar.url.to_s
 
-    if  url = '/avatars/original/missing.png'
+    if  url == '/avatars/original/missing.png'
 
       return ""
 

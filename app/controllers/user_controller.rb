@@ -169,7 +169,7 @@ class UserController < ApplicationController
 
       msg[:response] = CodeHelper.CODE_USER_NOT_EXIST
       msg[:user] = ""
-      msg[:description] = "该用户不存在"
+      msg[:description] = "登陆失败，密码或者用户名错误"
       render :json =>  msg.to_json
     else
       msg[:response] = CodeHelper.CODE_SUCCESS
