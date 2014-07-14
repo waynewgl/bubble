@@ -577,10 +577,10 @@ class UserController < ApplicationController
 
       if !checkUsersExist.nil?
 
-        logger.info "meeting date #{meet_date}  and meet time  #{checkUsersExist.meet_time.localtime.to_date}"
+        logger.info "meeting time from request #{meet_date} compare to  database meet time  #{checkUsersExist.meet_time.to_date}"
 
         #比较该记录是否处于当天， 如果是，则忽略 ， 如果不是， 添加记录
-        if  meet_date != checkUsersExist.meet_time.localtime.to_date   #如果两用户已经当天遇到过一次
+        if  meet_date != checkUsersExist.meet_time.to_date   #如果两用户已经当天遇到过一次
 
           isAddingNewMeet = true
         else
