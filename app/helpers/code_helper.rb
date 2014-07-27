@@ -18,6 +18,13 @@ module CodeHelper
     return @response
   end
 
+  def self.CODE_USER_LOGGED_IN
+
+    @response[:code] = "299"
+    @response[:desc] = "该用户已经登陆"
+    return @response
+  end
+
   def self.CODE_MISSING_PARAMS(arr_params)
 
     @response[:code] = "223"

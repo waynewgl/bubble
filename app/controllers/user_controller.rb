@@ -69,6 +69,13 @@ class UserController < ApplicationController
   end
 
 
+  def reportUser
+
+
+  end
+
+
+
   def findUUID
 
     uuid = Uuid.find_by_id(1)
@@ -177,18 +184,18 @@ class UserController < ApplicationController
       render :json =>  msg.to_json
       return
     else
-
-      if user.is_loggedin == "yes"
-
-        logger.info "what happended??? #{user.is_loggedin}"
-
-        msg[:response] = CodeHelper.CODE_FAIL
-        msg[:user] = ""
-        msg[:description] = "登陆失败， 用户已经登陆"
-        render :json =>  msg.to_json
-        return
-
-      else
+      #
+      #if user.is_loggedin == "yes"
+      #
+      #  logger.info "what happended??? #{user.is_loggedin}"
+      #
+      #  msg[:response] = CodeHelper.CODE_USER_LOGGED_IN
+      #  msg[:user] = ""
+      #  msg[:description] = "登陆失败， 用户已经登陆"
+      #  render :json =>  msg.to_json
+      #  return
+      #
+      #else
 
         msg[:response] = CodeHelper.CODE_SUCCESS
         user.passport_token = nil
@@ -199,7 +206,7 @@ class UserController < ApplicationController
         msg[:description] = "登陆成功"
         render :json =>  msg.to_json
         return
-      end
+      #end
 
     end
 
@@ -246,6 +253,45 @@ class UserController < ApplicationController
     end
 
   end
+
+
+
+  api :POST, "/user/updateUserDetail", "用户上传头像"
+
+  param :user_id, String, "用户id", :required => true
+  param :nickName, String, "用户nick name", :required => false
+  param :email, String, "用户email", :required => false
+  param :sex, String, "用户sex", :required => false
+  param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+
+  description <<-EOS
+
+  EOS
+
+
+  def  updateUserDetail
+
+    checkUpdatingUser = checkAndReturnUserExistBeforeOperationStart(params[:user_id], msg)
+
+    checkUpdatingUser.nickname = params[:nickName]
+    checkUpdatingUser.email = params[:email]
+    checkUpdatingUser.sex = params[:sex]
+
+    if checkUpdatingUser.save
+
+      msg[:response] =CodeHelper.CODE_SUCCESS
+      msg[:description] = "更新成功"
+      render :json =>  msg
+      return
+    else
+
+      msg[:response] =CodeHelper.CODE_FAIL
+      msg[:description] = "更新失败"
+      render :json =>  msg
+      return
+    end
+  end
+
 
   api :POST, "/user/upload_avatar_ios", "用户上传头像"
 
@@ -569,15 +615,15 @@ class UserController < ApplicationController
       #meet_date_max = meet_date + 0.5.hour
       #meet_date_min = meet_date - 0.5.hour
       meet_date  = Date.parse(params[:meet_time])
-
+      current_date = Date.today
       #checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and Date(meet_time) = ?", params[:user_id], params[:stranger_id], params[:stranger_id]).first
 
       #检查是否已经存在地址一样的记录
-      checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and address = ?", params[:user_id], params[:stranger_id], params[:address]).first
+      checkUsersExist = MeetGroup.where("user_id = ? and stranger_id = ? and address = ? and meet_time >= ?", params[:user_id], params[:stranger_id], params[:address], current_date).first
 
       if !checkUsersExist.nil?
 
-        logger.info "meeting time from request #{meet_date} compare to  database meet time  #{checkUsersExist.meet_time.to_date}"
+        logger.info "meeting time from request #{meet_date} compare to  database meet time  #{checkUsersExist.meet_time.to_date} and current date #{current_date}"
 
         #比较该记录是否处于当天， 如果是，则忽略 ， 如果不是， 添加记录
         if  meet_date != checkUsersExist.meet_time.to_date   #如果两用户已经当天遇到过一次
@@ -652,7 +698,7 @@ class UserController < ApplicationController
     time_from  = currentTime - 0.5.hour
     time_to  = currentTime + 0.5.hour
 
-    usersAround = Location.where("user_id != ?  and start_date >= ?  and start_Date <= ? ", params[:user_id], time_from, time_to)
+    usersAround = Location.where("user_id != ?  and start_date >= ?  and start_date <= ? ", params[:user_id], time_from, time_to)
 
     if usersAround.nil?
 
@@ -711,12 +757,14 @@ class UserController < ApplicationController
 
     if checkUser
 
-      meetUsersGroup = MeetGroup.where("user_id = ?", params[:user_id])
+      meetUsersGroup = MeetGroup.where("user_id = ?", params[:user_id]).order("meet_time desc").group("meet_time")
+
+      #meetUserGroupDateDay = MeetGroup.find_by_sql("select DISTINCT meet_time from meet_groups GROUP BY day(meet_time) order by day(meet_time) desc")
 
       if meetUsersGroup.nil?
 
         msg[:response] = CodeHelper.CODE_FAIL
-        msg[:description] = "你还没遇见缘分"
+        msg[:description] = "你还没偶遇过谁"
         msg[:users] = ""
         render :json =>  msg.to_json
         return
@@ -731,7 +779,10 @@ class UserController < ApplicationController
           user = User.where("id = ?", userGroup.stranger_id).first
           dic_user[:user] = user
           dic_user[:meet_address] =  userGroup.address
+          dic_user[:meet_time_month] =  userGroup.meet_time.localtime.strftime("%Y-%m-%d")
+          dic_user[:meet_time_hour] =  userGroup.meet_time.localtime.strftime('%H:%M')
           dic_user[:meet_time] =  userGroup.meet_time.localtime
+
           arr_users <<   dic_user
         end
 

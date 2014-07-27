@@ -12,6 +12,8 @@ class Event < ActiveRecord::Base
 
   belongs_to :category
 
+  has_one :e_location
+
 
   def as_json(options={})
     {

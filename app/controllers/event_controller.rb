@@ -10,6 +10,9 @@ class EventController < ApplicationController
   param :post_time, String, "用户event 创建时间", :required => true
   param :user_id, String, "用户 id", :required => true
   param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+  param :image, Data, "图片数据", :required => false
+  param :image_width, String, "图片宽度", :required => false
+  param :image_height, String, "图片高度", :required => false
 
   description <<-EOS
 
@@ -19,9 +22,9 @@ class EventController < ApplicationController
 
     msg = Hash.new
 
-    if params[:category_id].nil? ||  params[:title].nil?  ||  params[:content].nil? ||  params[:post_time].nil?  ||  params[:user_id].nil? ||  params[:passport_token].nil?
+    if  params[:title].nil?  ||  params[:content].nil? ||  params[:post_time].nil?  ||  params[:user_id].nil? ||  params[:passport_token].nil?
 
-      arr_params = ["category_id", "title", "content", "post_time", "user_id", "passport_token"]
+      arr_params = [ "title", "content", "post_time", "user_id", "passport_token"]
       msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
       msg[:description] = "请提供所需参数"
       render :json =>  msg.to_json
@@ -41,8 +44,25 @@ class EventController < ApplicationController
 
       if event.save
 
+        if !params[:image].nil? || !params[:image].blank?
+
+          eventImage = EventImage.new
+          eventImage.event_id = event.id
+          eventImage.update_attributes(:image => params[:image])
+          eventImage.width = params[:image_width]
+          eventImage.height = params[:image_height]
+
+          if eventImage.save
+
+            msg[:img_description] = "图像上传成功"
+          else
+            msg[:img_description] = "图像上传失败"
+          end
+        end
+
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "用户添加event成功"
+        msg[:event_id] = event.id
         render :json =>  msg
         return
       else
@@ -52,9 +72,132 @@ class EventController < ApplicationController
         render :json =>  msg
         return
       end
-
     end
   end
+
+
+  def searchTimeCapsule
+
+
+
+  end
+
+
+  def saveTimeCapsule
+
+    msg = Hash.new
+
+    if params[:user_id].nil?  || params[:event_id].nil?||  params[:address].nil?  ||  params[:latitude].nil? ||
+                params[:longitude].nil? ||  params[:passport_token].nil?  ||  params[:save_time].nil?
+
+      arr_params = ["event_id", "address", "latitude","longitude", "user_id", "passport_token", "save_time", "expire_time"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需参数"
+      render :json =>  msg.to_json
+      return
+    end
+
+    isUserExist = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if isUserExist
+
+        event = Event.find_by_id(params[:event_id])
+
+        if event.nil?
+
+          msg[:response] = CodeHelper.CODE_FAIL
+          msg[:description] = "该时光胶囊不存在"
+          render :json =>  msg.to_json
+          return
+        else
+
+          if !event.e_location.nil?
+
+            msg[:response] = CodeHelper.CODE_FAIL
+            msg[:description] = "该时光胶囊已经埋藏过一个位置"
+            render :json =>  msg.to_json
+            return
+          else
+
+            capsule_location = event.create_e_location
+            capsule_location.event_id =  params[:event_id]
+            capsule_location.title =  params[:title]
+            capsule_location.content =  params[:content]
+            capsule_location.address =  params[:address]
+            capsule_location.latitude =  params[:latitude]
+            capsule_location.longitude =  params[:longitude]
+            capsule_location.begin_date =  Time.parse(params[:save_time])
+
+            if capsule_location.save
+
+              msg[:response] =CodeHelper.CODE_SUCCESS
+              msg[:description] = "保存时光胶囊成功"
+              render :json =>  msg
+              return
+            else
+
+              msg[:response] =CodeHelper.CODE_FAIL
+              msg[:description] = "保存时光胶囊失败"
+              render :json =>  msg
+              return
+            end
+          end
+         end
+    end
+  end
+
+
+  api :POST, "/event/getUsersEvents", "用户events list (时光胶囊)"
+
+  param :user_id, String, "用户 id", :required => true
+  param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+
+  description <<-EOS
+
+
+  EOS
+  def getUsersEvents
+
+    msg = Hash.new
+
+    if  params[:user_id].nil? ||  params[:passport_token].nil?
+
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需参数"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = User.find_by_id(params[:user_id])
+
+    if checkUser
+
+      event_timeCapsule = Event.where("user_id = ?", params[:user_id]).order("created_at desc")
+
+      if event_timeCapsule.count > 0
+
+        msg[:response] =CodeHelper.CODE_SUCCESS
+        msg[:description] = "返回事件成功"
+        msg[:event] = event_timeCapsule
+        render :json =>  msg
+        return
+      else
+
+        msg[:response] =CodeHelper.CODE_FAIL
+        msg[:description] = "返回事件失败"
+        render :json =>  msg
+        return
+      end
+    else
+
+      msg[:response] =CodeHelper.CODE_FAIL
+      msg[:description] = "用户不存在"
+      render :json =>  msg
+      return
+    end
+  end
+
 
   api :POST, "/event/deleteEvent", "用户删除event"
 
@@ -104,6 +247,7 @@ class EventController < ApplicationController
         event_tobe_deleted.event_images.update_attributes(:image => nil)
         event_tobe_deleted.event_images.destroy_all()
         event_tobe_deleted.event_locations.destroy_all()
+        event_tobe_deleted.e_location.delete
         event_tobe_deleted.report_events.destroy_all()
         event_tobe_deleted.delete
 
@@ -122,6 +266,8 @@ class EventController < ApplicationController
   param :event_id, String, "用户event id", :required => true
   param :user_id, String, "用户 id", :required => true
   param :image, String, "用户上传的图像data", :required => true
+  param :image_height, String, "用户上传的图像height", :required => true
+  param :image_width, String, "用户上传的图像height", :required => true
   param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
 
   description <<-EOS
@@ -162,7 +308,6 @@ class EventController < ApplicationController
         return
       end
 
-
       if params[:image].nil? || params[:image].blank?
 
         arr_params = ["image"]
@@ -175,8 +320,8 @@ class EventController < ApplicationController
         eventImage = EventImage.new
         eventImage.event_id = params[:event_id]
         eventImage.update_attributes(:image => params[:image])
-        eventImage.width = params[:width]
-        eventImage.height = params[:height]
+        eventImage.width = params[:image_width]
+        eventImage.height = params[:image_height]
 
         if eventImage.save
 
