@@ -18,6 +18,13 @@ module CodeHelper
     return @response
   end
 
+  def self.CODE_EVENT_FAIL
+
+    @response[:code] = "292"
+    @response[:desc] = "无事件"
+    return @response
+  end
+
   def self.CODE_USER_LOGGED_IN
 
     @response[:code] = "299"

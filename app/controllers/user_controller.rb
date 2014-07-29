@@ -277,6 +277,11 @@ class UserController < ApplicationController
     checkUpdatingUser.email = params[:email]
     checkUpdatingUser.sex = params[:sex]
 
+    if !params[:avatar].nil?
+
+      checkUpdatingUser.update_attributes(:avatar => params[:avatar])
+    end
+
     if checkUpdatingUser.save
 
       msg[:response] =CodeHelper.CODE_SUCCESS
@@ -757,7 +762,9 @@ class UserController < ApplicationController
 
     if checkUser
 
-      meetUsersGroup = MeetGroup.where("user_id = ?", params[:user_id]).order("meet_time desc").group("meet_time")
+      #meetUsersGroup = MeetGroup.where("user_id = ?", params[:user_id]).order("meet_time desc").group("meet_time")
+
+      meetUsersGroup = MeetGroup.find_by_sql("SELECT *, count(stranger_id) as total_meet  FROM meet_groups WHERE user_id = #{params[:user_id]} GROUP BY stranger_id,address ORDER BY meet_time desc")
 
       #meetUserGroupDateDay = MeetGroup.find_by_sql("select DISTINCT meet_time from meet_groups GROUP BY day(meet_time) order by day(meet_time) desc")
 
@@ -772,7 +779,7 @@ class UserController < ApplicationController
 
         arr_users = Array.new
 
-        for userGroup in   meetUsersGroup
+        for userGroup in  meetUsersGroup
 
           dic_user = Hash.new
 
@@ -782,8 +789,9 @@ class UserController < ApplicationController
           dic_user[:meet_time_month] =  userGroup.meet_time.localtime.strftime("%Y-%m-%d")
           dic_user[:meet_time_hour] =  userGroup.meet_time.localtime.strftime('%H:%M')
           dic_user[:meet_time] =  userGroup.meet_time.localtime
+          dic_user[:total_meet] =  userGroup.total_meet
 
-          arr_users <<   dic_user
+          arr_users <<  dic_user
         end
 
         msg[:response] = CodeHelper.CODE_SUCCESS
@@ -792,11 +800,7 @@ class UserController < ApplicationController
         render :json =>  msg.to_json
         return
       end
-
     end
-
   end
-
-
 
 end
