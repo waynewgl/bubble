@@ -71,6 +71,7 @@ Meets::Application.routes.draw do
   match 'event/deleteEventImage' => 'event#deleteEventImage'
   match 'event/saveTimeCapsule' => 'event#saveTimeCapsule'
   match 'event/getUsersEvents' => 'event#getUsersEvents'
+  match 'event/searchTimeCapsule' => 'event#searchTimeCapsule'
 
   match 'category/listCategory' => 'category#listCategory'
   match 'category/addCategory' => 'event#addCategory'

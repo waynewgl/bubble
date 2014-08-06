@@ -76,13 +76,98 @@ class EventController < ApplicationController
   end
 
 
+  api :GET, "/event/searchTimeCapsule", "搜索附近的时光胶囊"
+
+  param :user_id, String, "用户 id， 可以多个用,隔开  e.g. 1,2,3,4,5", :required => true
+  param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+  param :longitude, String, "位置longitude", :required => true
+  param :latitude, String, "位置latitude", :required => true
+
+  description <<-EOS
+
+
+  EOS
   def searchTimeCapsule
 
+    msg = Hash.new
 
+    if  params[:longitude].nil?  ||  params[:latitude].nil?   ||  params[:user_id].nil?  ||  params[:passport_token].nil?
 
+      arr_params = [ "longitude", "latitude", "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需参数"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      allTimeCapsules = Event.all
+
+      if params[:distance].nil?
+
+        distance_value = 300
+      else
+
+        distance_value = params[:distance]
+      end
+
+      arr_timeCapsules = Array.new
+
+      if allTimeCapsules.count > 0
+
+        for cap in allTimeCapsules
+
+          a_distance = [params[:latitude].to_f, params[:longitude].to_f]
+          location = cap.e_location
+          post_user =  User.find_by_id (cap.user_id)
+
+          if !location.nil?
+
+            b_distance =  [location.latitude.to_f, location.longitude.to_f]
+
+            presenting_capsule =  distance(a_distance, b_distance)
+            logger.info "do we get distance value #{presenting_capsule}"
+
+            if presenting_capsule <= distance_value
+
+              arr_timeCapsules << cap
+            end
+          end
+        end
+
+        msg[:response] =CodeHelper.CODE_SUCCESS
+        msg[:description] = "返回事件成功"
+        msg[:events] = arr_timeCapsules
+        render :json =>  msg
+        return
+      else
+
+        msg[:response] =CodeHelper.CODE_FAIL
+        msg[:description] = "周围没有事件"
+        msg[:events] = ""
+        render :json =>  msg
+        return
+      end
+    end
   end
 
+  api :GET, "/event/saveTimeCapsule", "保存附近的时光胶囊"
 
+  param :user_id, String, "用户 id， 可以多个用,隔开  e.g. 1,2,3,4,5", :required => true
+  param :event_id, String, "已经创建好的event", :required => true
+  param :passport_token, String, "用户令牌，用于操作的身份验证", :required => true
+  param :longitude, String, "位置longitude", :required => true
+  param :latitude, String, "位置latitude", :required => true
+  param :address, String, "位置地址详情", :required => true
+  param :save_time, String, "埋藏时间", :required => true
+
+  description <<-EOS
+
+
+  EOS
   def saveTimeCapsule
 
     msg = Hash.new
@@ -184,7 +269,7 @@ class EventController < ApplicationController
         return
       else
 
-        msg[:response] =CodeHelper.CODE_FAIL
+        msg[:response] =CodeHelper.CODE_EVENT_FAIL
         msg[:description] = "返回事件失败"
         render :json =>  msg
         return

@@ -785,13 +785,18 @@ class UserController < ApplicationController
 
           user = User.where("id = ?", userGroup.stranger_id).first
           dic_user[:user] = user
-          dic_user[:meet_address] =  userGroup.address
-          dic_user[:meet_time_month] =  userGroup.meet_time.localtime.strftime("%Y-%m-%d")
-          dic_user[:meet_time_hour] =  userGroup.meet_time.localtime.strftime('%H:%M')
-          dic_user[:meet_time] =  userGroup.meet_time.localtime
-          dic_user[:total_meet] =  userGroup.total_meet
 
-          arr_users <<  dic_user
+          if  !userGroup.address.nil? && userGroup.address != "(null)"
+
+            dic_user[:meet_address] =  userGroup.address
+            dic_user[:meet_time_month] =  userGroup.meet_time.localtime.strftime("%Y-%m-%d")
+            dic_user[:meet_time_hour] =  userGroup.meet_time.localtime.strftime('%H:%M')
+            dic_user[:meet_time] =  userGroup.meet_time.localtime
+            dic_user[:total_meet] =  userGroup.total_meet
+
+            arr_users <<  dic_user
+          end
+
         end
 
         msg[:response] = CodeHelper.CODE_SUCCESS

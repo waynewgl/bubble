@@ -22,10 +22,19 @@ class Event < ActiveRecord::Base
         category_id: self.category_id,
         title: self.title,
         content: self.content,
-        post_time: self.post_time,
-        event_image: self.event_images
+        post_user: self.post_user,
+        post_time: self.updated_at.localtime,
+        event_image: self.event_images,
+        event_location: self.e_location
     }
   end
 
+
+  def post_user
+
+    user = User.find_by_id(self.user_id)
+
+    return user
+  end
 
 end

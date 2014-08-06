@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   end
 
 
-
+   #puts distance [46.3625, 15.114444],[46.055556, 14.508333]
 
   def distance(a, b)   # (latitude, longittude)
 
