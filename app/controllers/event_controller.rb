@@ -104,7 +104,7 @@ class EventController < ApplicationController
 
     if checkUser
 
-      allTimeCapsules = Event.all.order("updated_at desc")
+      allTimeCapsules = Event.order("updated_at desc").all
 
       if params[:distance].nil?
 
