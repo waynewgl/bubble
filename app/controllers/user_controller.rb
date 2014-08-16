@@ -276,6 +276,7 @@ class UserController < ApplicationController
     checkUpdatingUser.nickname = params[:nickName]
     checkUpdatingUser.email = params[:email]
     checkUpdatingUser.sex = params[:sex]
+    checkUpdatingUser.dob = params[:age]
 
     if !params[:avatar].nil?
 

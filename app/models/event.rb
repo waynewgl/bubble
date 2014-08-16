@@ -25,7 +25,7 @@ class Event < ActiveRecord::Base
         post_user: self.post_user,
         post_time: self.updated_at.localtime,
         event_image: self.event_images,
-        event_location: self.e_location
+        event_location: self.getEventLocations
     }
   end
 
@@ -35,6 +35,18 @@ class Event < ActiveRecord::Base
     user = User.find_by_id(self.user_id)
 
     return user
+  end
+
+  def getEventLocations
+
+    if  self.e_location != nil
+
+      return self.e_location
+
+    else
+
+      return ""
+    end
   end
 
 end
