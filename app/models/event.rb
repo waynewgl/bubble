@@ -14,6 +14,7 @@ class Event < ActiveRecord::Base
 
   has_one :e_location
 
+  has_many :comments, :through => :comments
 
   def as_json(options={})
     {

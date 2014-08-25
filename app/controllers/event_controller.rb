@@ -104,6 +104,15 @@ class EventController < ApplicationController
 
     if checkUser
 
+      if  params[:latitude].to_f == 0.0 || params[:longitude].to_f == 0.0
+
+        msg[:response] =CodeHelper.CODE_REFRESH
+        msg[:description] = "返回事件失败,GPS坐标无效"
+        msg[:events] = ""
+        render :json =>  msg
+        return
+      end
+
       allTimeCapsules = Event.order("updated_at desc").all
 
       if params[:distance].nil?
@@ -123,6 +132,8 @@ class EventController < ApplicationController
           a_distance = [params[:latitude].to_f, params[:longitude].to_f]
           location = cap.e_location
           post_user =  User.find_by_id (cap.user_id)
+
+          logger.info "getting  zero  gps  #{params[:latitude].to_f}, #{params[:longitude].to_f}"
 
           if !location.nil?
 

@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
   has_many :report_events
   has_many :events, :through => :report_events
 
+  has_many :comments, :through => :comments
+
   has_attached_file :avatar, :styles => { :small => "150x150>", :content => "800x800>", :thumb => "60x60>", :thumb_small=>"30x30>" },
                     :url => "/upload/avatars/:class/user/:id/:style_:basename.:extension"  ,
                     :path => ":rails_root/public/upload/avatars/:class/user/:id/:style_:basename.:extension"
@@ -29,8 +31,7 @@ class User < ActiveRecord::Base
         image_url: self.checkAvatar,
         nickname: self.checkNickName,
         is_logged: self.is_loggedin
-
-    }
+  }
   end
 
 

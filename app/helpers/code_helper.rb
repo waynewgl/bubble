@@ -18,6 +18,13 @@ module CodeHelper
     return @response
   end
 
+  def self.CODE_REFRESH
+
+    @response[:code] = "255"
+    @response[:desc] = "重新刷新"
+    return @response
+  end
+
   def self.CODE_EVENT_FAIL
 
     @response[:code] = "292"
