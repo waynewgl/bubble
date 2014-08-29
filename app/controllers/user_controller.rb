@@ -271,6 +271,8 @@ class UserController < ApplicationController
 
   def  updateUserDetail
 
+    msg = Hash.new
+
     checkUpdatingUser = checkAndReturnUserExistBeforeOperationStart(params[:user_id], msg)
 
     checkUpdatingUser.nickname = params[:nickName]

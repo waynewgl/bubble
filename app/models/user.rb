@@ -30,8 +30,9 @@ class User < ActiveRecord::Base
         sex: self.sex,
         image_url: self.checkAvatar,
         nickname: self.checkNickName,
-        is_logged: self.is_loggedin
-  }
+        is_logged: self.is_loggedin,
+        age: self.dob
+    }
   end
 
 
