@@ -73,6 +73,11 @@ Meets::Application.routes.draw do
   match 'event/getUsersEvents' => 'event#getUsersEvents'
   match 'event/searchTimeCapsule' => 'event#searchTimeCapsule'
 
+  match 'comment/createComment' => 'comment#createComment'
+  match 'comment/deleteComment' => 'comment#deleteComment'
+  match 'comment/listComments' => 'comment#listComments'
+  match 'comment/listCommentsCount' => 'comment#listCommentsCount'
+
   match 'category/listCategory' => 'category#listCategory'
   match 'category/addCategory' => 'event#addCategory'
 

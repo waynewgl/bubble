@@ -342,6 +342,7 @@ class EventController < ApplicationController
 
         event_tobe_deleted.event_images.update_attributes(:image => nil)
         event_tobe_deleted.event_images.destroy_all()
+        event_tobe_deleted.comments.destroy_all
         event_tobe_deleted.event_locations.destroy_all()
         event_tobe_deleted.e_location.delete
         event_tobe_deleted.report_events.destroy_all()
