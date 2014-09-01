@@ -8,6 +8,44 @@ class UserController < ApplicationController
 
   end
 
+
+
+  def changePassword
+
+    if params[:password].nil? ||  params[:user_id].nil? || params[:passport_token].nil?
+
+      arr_params = ["event_id", "user_id", "passport token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请填写所需参数..."
+      render :json =>  msg.to_json
+      return
+    end
+
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      user = User.find_by_id(params[:user_id])
+      user.password = Digest::SHA1.hexdigest(params[:password])
+
+      if user.save
+
+        msg[:response] = CodeHelper.CODE_SUCCESS
+        msg[:description] = "修改密码成功"
+        render :json =>  msg.to_json
+        return
+      else
+
+        msg[:response] = CodeHelper.CODE_FAIL
+        msg[:description] = "修改密码失败"
+        render :json =>  msg.to_json
+        return
+      end
+    end
+  end
+
+
   api :POST, "/user/report_event", "用户举报事件"
 
   param :event_id, String, "举报的event id", :required => true

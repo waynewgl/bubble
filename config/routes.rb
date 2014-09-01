@@ -63,7 +63,7 @@ Meets::Application.routes.draw do
   match 'user/recordUserLocation' => 'user#recordUserLocation'
   match 'user/addUsersMeetLocation' => 'user#addUsersMeetLocation'
   match 'user/updateUserDetail' => 'user#updateUserDetail'
-
+  match 'user/changePassword' => 'user#changePassword'
 
 
   match 'event/createEvent' => 'event#createEvent'
