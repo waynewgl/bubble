@@ -12,6 +12,8 @@ class UserController < ApplicationController
 
   def changePassword
 
+    msg = Hash.new
+
     if params[:password].nil? ||  params[:user_id].nil? || params[:passport_token].nil?
 
       arr_params = ["event_id", "user_id", "passport token"]
