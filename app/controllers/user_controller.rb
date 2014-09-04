@@ -806,6 +806,8 @@ class UserController < ApplicationController
             dic_user = Hash.new
             dic_user[:user_id] = userGroup.user_id
             dic_user[:stranger_id] = userGroup.stranger_id
+            dic_user[:address] = userGroup.address
+
             user = User.where("id = ?", userGroup.stranger_id).first
 
             if user.nil?
