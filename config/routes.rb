@@ -64,6 +64,7 @@ Meets::Application.routes.draw do
   match 'user/addUsersMeetLocation' => 'user#addUsersMeetLocation'
   match 'user/updateUserDetail' => 'user#updateUserDetail'
   match 'user/changePassword' => 'user#changePassword'
+  match 'user/userMeetStrangers' => 'user#userMeetStrangers'
 
 
   match 'event/createEvent' => 'event#createEvent'
@@ -73,6 +74,7 @@ Meets::Application.routes.draw do
   match 'event/saveTimeCapsule' => 'event#saveTimeCapsule'
   match 'event/getUsersEvents' => 'event#getUsersEvents'
   match 'event/searchTimeCapsule' => 'event#searchTimeCapsule'
+  match 'event/searchSpecificTimeCapsule' => 'event#searchSpecificTimeCapsule'
 
   match 'comment/createComment' => 'comment#createComment'
   match 'comment/deleteComment' => 'comment#deleteComment'

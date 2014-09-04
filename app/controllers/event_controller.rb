@@ -76,6 +76,46 @@ class EventController < ApplicationController
   end
 
 
+
+  def searchSpecificTimeCapsule
+
+    msg = Hash.new
+
+    if  params[:longitude].nil?  ||  params[:latitude].nil?   ||  params[:user_id].nil? ||  params[:event_id].nil?  ||  params[:passport_token].nil?
+
+      arr_params = [ "longitude", "latitude", "user_id", "passport_token", "event_id"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需参数"
+      render :json =>  msg.to_json
+      return
+    end
+
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      specificCapsule = Event.find_by_id(params[:event_id])
+
+      if !specificCapsule.nil?
+
+        msg[:response] =CodeHelper.CODE_SUCCESS
+        msg[:description] = "返回事件成功"
+        msg[:event] = specificCapsule
+        render :json =>  msg
+        return
+      else
+
+        msg[:response] =CodeHelper.CODE_FAIL
+        msg[:description] = "事件不存在"
+        msg[:event] = ""
+        render :json =>  msg
+        return
+      end
+    end
+
+  end
+
   api :GET, "/event/searchTimeCapsule", "搜索附近的时光胶囊"
 
   param :user_id, String, "用户 id， 可以多个用,隔开  e.g. 1,2,3,4,5", :required => true

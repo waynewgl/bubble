@@ -778,6 +778,71 @@ class UserController < ApplicationController
   end
 
 
+  def userMeetStrangers
+
+      msg = Hash.new
+
+      #logger.info "get distance #{distance([46.3625, 15.114444],[46.055556, 14.508333])}"
+
+      checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+      if checkUser
+
+        usersMeetDistinct = MeetGroup.find_by_sql("SELECT *, count(stranger_id) as total_meet  FROM meet_groups WHERE user_id = #{params[:user_id]} GROUP BY user_id, stranger_id ORDER BY meet_time desc")
+
+        if usersMeetDistinct.nil?
+
+          msg[:response] = CodeHelper.CODE_FAIL
+          msg[:description] = "你还没偶遇过谁"
+          msg[:users] = ""
+          render :json =>  msg.to_json
+          return
+        else
+
+          usersMeets = Array.new
+
+          for userGroup in usersMeetDistinct
+
+            dic_user = Hash.new
+            dic_user[:user_id] = userGroup.user_id
+            dic_user[:stranger_id] = userGroup.stranger_id
+            user = User.where("id = ?", userGroup.stranger_id).first
+
+            if user.nil?
+
+              dic_user[:stranger] = ""
+            else
+
+              dic_user[:stranger] = user
+            end
+
+            dic_user[:total_meet] = userGroup.total_meet
+            dic_user[:first_meet] = userGroup.meet_time.localtime
+
+            userMeetAddress = MeetGroup.find_by_sql("SELECT *, count(stranger_id) as total_meet  FROM meet_groups WHERE user_id = #{userGroup.user_id} and stranger_id = #{userGroup.stranger_id} GROUP BY address, stranger_id ORDER BY meet_time desc")
+
+            if  userMeetAddress.nil?
+
+              dic_user[:user_address_meet] = ""
+            else
+
+              dic_user[:user_address_meet] = userMeetAddress
+            end
+
+            usersMeets <<  dic_user
+          end
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "返回偶遇对象"
+          msg[:users] = usersMeets
+          render :json =>  msg.to_json
+          return
+        end
+      end
+    end
+
+
+
   api :GET, "/user/historyOfUsersMeet", "返回指定用户遇到的人"
 
   param :user_id, String, "用户 id， 可以多个用,隔开  e.g. 1,2,3,4,5", :required => true
@@ -839,7 +904,6 @@ class UserController < ApplicationController
 
             arr_users <<  dic_user
           end
-
         end
 
         msg[:response] = CodeHelper.CODE_SUCCESS
