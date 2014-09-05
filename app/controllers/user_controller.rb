@@ -503,7 +503,7 @@ class UserController < ApplicationController
 
     loc = Location.where("user_id = ?", params[:user_id]).first
 
-    if loc.nil?
+    if !loc.nil?
 
       msg[:response] =CodeHelper.CODE_SUCCESS
       msg[:location] = loc
