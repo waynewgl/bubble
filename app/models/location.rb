@@ -15,6 +15,7 @@ class Location < ActiveRecord::Base
         #uuid: self.uuid,
         longitude: self.longitude,
         latitude: self.latitude,
+        address: self.content,
         recorded_at: self.start_date.localtime,
         content: self.content,
         user_id: self.user_id,
