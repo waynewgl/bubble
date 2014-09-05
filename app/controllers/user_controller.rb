@@ -487,6 +487,40 @@ class UserController < ApplicationController
     end
   end
 
+
+
+  def getLatestLocation
+
+    msg = Hash.new
+
+    if params[:user_id].nil?   || params[:passport_token].nil?
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    loc = Location.where("user_id = ?", params[:user_id]).first
+
+    if loc.nil?
+
+      msg[:response] =CodeHelper.CODE_SUCCESS
+      msg[:location] = loc
+      msg[:description] = "操作成功, 返回用户位置"
+      render :json =>  msg
+      return
+    else
+
+      msg[:response] =CodeHelper.CODE_FAIL
+      msg[:location] = ""
+      msg[:description] = "操作失败, 返回用户位置失败"
+      render :json =>  msg
+      return
+    end
+
+  end
+
   api :POST, "/user/recordUserLocation", "用户更新位置信息, 一个用户只有一个唯一位置"
 
   param :longitude, String, "用户位置longitude", :required => true
