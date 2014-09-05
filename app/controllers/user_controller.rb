@@ -855,7 +855,7 @@ class UserController < ApplicationController
             dic_user[:total_meet] = userGroup.total_meet
             dic_user[:first_meet] = userGroup.meet_time.localtime
 
-            userMeetAddress = MeetGroup.find_by_sql("SELECT *, count(stranger_id) as total_meet  FROM meet_groups WHERE user_id = #{userGroup.user_id} and stranger_id = #{userGroup.stranger_id} GROUP BY address, stranger_id ORDER BY meet_time desc")
+            userMeetAddress = MeetGroup.find_by_sql("SELECT *, count(stranger_id) as total_meet  FROM meet_groups WHERE user_id = #{userGroup.user_id} and stranger_id = #{userGroup.stranger_id} GROUP BY address, stranger_id ORDER BY meet_time asc")
 
             if  userMeetAddress.nil?
 
