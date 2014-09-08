@@ -4,6 +4,17 @@ module CodeHelper
 
   @response = Hash.new
 
+  def self.USER_DISTANCE
+
+    return 300.0
+  end
+
+  def self.DISTANCE_METER_UPDATE
+
+    return 10.0
+  end
+
+
   def self.CODE_SUCCESS
 
     @response[:code] = "200"
