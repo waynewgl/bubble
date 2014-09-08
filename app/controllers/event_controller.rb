@@ -192,7 +192,7 @@ class EventController < ApplicationController
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "返回事件成功"
         msg[:user_distance] = CodeHelper.USER_DISTANCE
-        msg[:distance_update_meter] = CODE.DISTANCE_METER_UPDATE
+        msg[:distance_update_meter] = CodeHelper.DISTANCE_METER_UPDATE
         msg[:events] = arr_timeCapsules
         render :json =>  msg
         return
