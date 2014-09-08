@@ -157,7 +157,7 @@ class EventController < ApplicationController
 
       if params[:distance].nil?
 
-        distance_value = 300
+        distance_value = CodeHelper.USER_DISTANCE
       else
 
         distance_value = params[:distance]
