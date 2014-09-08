@@ -6,7 +6,7 @@ module CodeHelper
 
   def self.USER_DISTANCE
 
-    return 300.0
+    return 3000000.0
   end
 
   def self.DISTANCE_METER_UPDATE
