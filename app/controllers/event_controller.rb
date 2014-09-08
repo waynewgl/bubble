@@ -380,18 +380,47 @@ class EventController < ApplicationController
           return
         end
 
-        event_tobe_deleted.event_images.update_attributes(:image => nil)
-        event_tobe_deleted.event_images.destroy_all()
-        event_tobe_deleted.comments.destroy_all
-        event_tobe_deleted.event_locations.destroy_all()
-        event_tobe_deleted.e_location.delete
-        event_tobe_deleted.report_events.destroy_all()
-        event_tobe_deleted.delete
+        if  !event_tobe_deleted.event_images.nil?  && event_tobe_deleted.event_images.count > 0
 
-        msg[:response] = CodeHelper.CODE_SUCCESS
-        msg[:description] = "删除event成功"
-        render :json =>  msg.to_json
-        return
+          for img in   event_tobe_deleted.event_images
+
+            img = nil
+          end
+
+          event_tobe_deleted.event_images.destroy_all()
+        end
+
+        if  !event_tobe_deleted.comments.nil?
+
+          event_tobe_deleted.comments.destroy_all()
+        end
+
+        if  !event_tobe_deleted.e_location.nil?
+
+          event_tobe_deleted.e_location.delete
+        end
+
+        if  !event_tobe_deleted.report_events.nil?
+
+          event_tobe_deleted.report_events.destroy_all()
+        end
+
+        if  event_tobe_deleted.delete
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "删除event成功"
+          render :json =>  msg.to_json
+          return
+
+        else
+
+          msg[:response] = CodeHelper.CODE_FAIL
+          msg[:description] = "删除event失败"
+          render :json =>  msg.to_json
+          return
+        end
+
+
 
       end
     end

@@ -3,9 +3,6 @@ class Event < ActiveRecord::Base
 
   has_many :event_images
 
-  has_many :event_locations
-  has_many :locations, :through => :event_locations
-
   # is reported by user through report event
   has_many :report_events
   has_many :users, :through => :report_events
@@ -14,7 +11,7 @@ class Event < ActiveRecord::Base
 
   has_one :e_location
 
-  has_many :comments, :through => :comments
+  has_many :comments
 
   def as_json(options={})
     {
