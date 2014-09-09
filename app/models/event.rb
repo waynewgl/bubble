@@ -18,7 +18,7 @@ class Event < ActiveRecord::Base
         id: self.id,
         #uuid: self.uuid,
         category_id: self.category_id,
-        title: self.title,
+        title: self.checkTitle,
         content: self.content,
         post_user: self.post_user,
         post_time: self.updated_at.localtime,
@@ -27,6 +27,19 @@ class Event < ActiveRecord::Base
     }
   end
 
+
+  def checkTitle
+
+    if self.title.nil?
+
+      return ""
+
+    else
+
+      return self.title
+    end
+
+  end
 
   def post_user
 
