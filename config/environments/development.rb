@@ -34,4 +34,20 @@ Meets::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  ActionMailer::Base.delivery_method = :smtp
+
+  config.action_mailer.smtp_settings = {
+      :address => "smtp.gmail.com",
+      :port => "587",
+      :domain => "gmail.com",
+      :authentication => "plain",
+      :user_name => "waynewgl@gmail.com",
+      :password => "zero06120707",
+      :enable_starttls_auto => true
+  }
+
+  ActionMailer::Base.default_content_type = "text/html"
+
+
 end

@@ -2,7 +2,7 @@
 
 class User < ActiveRecord::Base
 
-  attr_accessible :UUID, :is_loggedin
+  attr_accessible :UUID, :is_loggedin, :nickname, :account, :password
 
   attr_accessible :avatar , :avatar_content_type, :avatar_file_name, :avatar_file_size, :avatar_updated_at
 

@@ -67,6 +67,7 @@ Meets::Application.routes.draw do
   match 'user/userMeetStrangers' => 'user#userMeetStrangers'
   match 'user/getLatestLocation' => 'user#getLatestLocation'
 
+  match 'user/restorePassword' => 'user#restorePassword'
 
   match 'event/createEvent' => 'event#createEvent'
   match 'event/deleteEvent' => 'event#deleteEvent'

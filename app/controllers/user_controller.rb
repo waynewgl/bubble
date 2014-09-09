@@ -9,6 +9,38 @@ class UserController < ApplicationController
   end
 
 
+  def restorePassword
+
+    msg = Hash.new
+
+    if  params[:account].nil?
+
+      arr_params = ["account"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请填写所需参数..."
+      render :json =>  msg.to_json
+      return
+    end
+
+
+    @user = User.where("account = ?", params[:account]).first
+
+    if @user.nil?
+
+      msg[:response] = CodeHelper.CODE_FAIL
+      msg[:description] = "返回密码失败,邮箱不正确"
+      render :json =>  msg.to_json
+      return
+    else
+
+      UserMailer.confirm(@user, "返回密码").deliver
+      msg[:response] = CodeHelper.CODE_SUCCESS
+      msg[:description] = "已经返回密码到你的邮箱，请查看"
+      render :json =>  msg.to_json
+      return
+    end
+  end
+
 
   def changePassword
 
