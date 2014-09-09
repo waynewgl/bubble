@@ -22,9 +22,9 @@ class EventController < ApplicationController
 
     msg = Hash.new
 
-    if  params[:title].nil?  ||  params[:content].nil? ||  params[:post_time].nil?  ||  params[:user_id].nil? ||  params[:passport_token].nil?
+    if   params[:content].nil? ||  params[:post_time].nil?  ||  params[:user_id].nil? ||  params[:passport_token].nil?
 
-      arr_params = [ "title", "content", "post_time", "user_id", "passport_token"]
+      arr_params = [ "content", "post_time", "user_id", "passport_token"]
       msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
       msg[:description] = "请提供所需参数"
       render :json =>  msg.to_json
