@@ -9,6 +9,33 @@ class UserController < ApplicationController
   end
 
 
+  def getReportReasons
+
+    msg = Hash.new
+
+    if  params[:user_id].nil?   || params[:passport_token].nil?
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      arr_report_reason = ["垃圾营销","淫秽色情","骚扰信息","人身攻击","敏感信息", "泄露隐私"]
+
+      msg[:response] = CodeHelper.CODE_SUCCESS
+      msg[:description] = "返回成功."
+      msg[:reasons] = arr_report_reason
+      render :json =>  msg.to_json
+      return
+    end
+  end
+
+
   def restorePassword
 
     msg = Hash.new
@@ -80,65 +107,6 @@ class UserController < ApplicationController
   end
 
 
-  api :POST, "/user/report_event", "用户举报事件"
-
-  param :event_id, String, "举报的event id", :required => true
-  param :user_id, String, "用户 id", :required => true
-  param :reason, String, "举报原因", :required => true
-
-  description <<-EOS
-
-
-  EOS
-
-  def report_event
-
-    msg = Hash.new
-
-    if params[:event_id].nil? ||  params[:user_id].nil? ||  params[:reason].nil?  || params[:passport_token].nil?
-
-      arr_params = ["event_id", "user_id", "reason", "passport token"]
-      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
-      msg[:description] = "请填写所需参数..."
-      render :json =>  msg.to_json
-      return
-    else
-
-      event = Event.find_by_id(params[:event_id])
-      if event.nil?
-
-        msg[:response] = CodeHelper.CODE_FAIL
-        msg[:description] = "没有该事件"
-        render :json =>  msg.to_json
-        return
-      end
-
-      checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
-
-      if checkUser
-
-       reportEvent = ReportEvent.new
-       reportEvent.event_id = params[:event_id]
-       reportEvent.user_id = params[:user_id]
-       reportEvent.reason = params[:reason]
-
-        if reportEvent.save
-
-         msg[:response] = CodeHelper.CODE_SUCCESS
-         msg[:description] = "举报成功"
-         render :json =>  msg.to_json
-         return
-
-       else
-         msg[:response] = CodeHelper.CODE_FAIL
-         msg[:description] = "举报失败"
-         render :json =>  msg.to_json
-         return
-       end
-
-      end
-    end
-  end
 
 
   def reportUser

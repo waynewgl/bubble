@@ -36,6 +36,13 @@ module CodeHelper
     return @response
   end
 
+  def self.CODE_REPORT_REPEAT
+
+    @response[:code] = "204"
+    @response[:desc] = "重复举报"
+    return @response
+  end
+
   def self.CODE_EVENT_FAIL
 
     @response[:code] = "292"

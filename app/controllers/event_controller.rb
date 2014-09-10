@@ -429,6 +429,77 @@ class EventController < ApplicationController
   end
 
 
+  api :POST, "/event/report_event", "用户举报事件"
+
+  param :event_id, String, "举报的event id", :required => true
+  param :user_id, String, "用户 id", :required => true
+  param :reason, String, "举报原因", :required => true
+
+  description <<-EOS
+
+
+  EOS
+
+  def report_event
+
+    msg = Hash.new
+
+    if params[:event_id].nil? ||  params[:user_id].nil? ||  params[:reason].nil?  || params[:passport_token].nil?
+
+      arr_params = ["event_id", "user_id", "reason", "passport token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请填写所需参数..."
+      render :json =>  msg.to_json
+      return
+    else
+
+      event = Event.find_by_id(params[:event_id])
+      if event.nil?
+
+        msg[:response] = CodeHelper.CODE_FAIL
+        msg[:description] = "没有该事件"
+        render :json =>  msg.to_json
+        return
+      end
+
+      checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+      if checkUser
+
+        report_event = ReportEvent.where("event_id = ? && user_id = ?", params[:event_id], params[:user_id]).first
+
+        if !report_event.nil?
+
+          msg[:response] = CodeHelper.CODE_REPORT_REPEAT
+          msg[:description] = "你已经举报过了"
+          render :json =>  msg.to_json
+          return
+        end
+
+        reportEvent = ReportEvent.new
+        reportEvent.event_id = params[:event_id]
+        reportEvent.user_id = params[:user_id]
+        reportEvent.reason = params[:reason]
+
+        if reportEvent.save
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "举报成功"
+          render :json =>  msg.to_json
+          return
+
+        else
+          msg[:response] = CodeHelper.CODE_FAIL
+          msg[:description] = "举报失败"
+          render :json =>  msg.to_json
+          return
+        end
+
+      end
+    end
+  end
+
+
   api :POST, "/event/uploadEventImage", "用户添加event image"
 
   param :event_id, String, "用户event id", :required => true

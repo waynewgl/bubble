@@ -57,7 +57,6 @@ Meets::Application.routes.draw do
   match 'user/userLogout' => 'user#userLogout'
   match 'user/upload_avatar_ios' => 'user#upload_avatar_ios'
   match 'user/recordLocation' => 'user#recordLocation'
-  match 'user/report_event' => 'user#report_event'
   match 'user/usersLocationMet' => 'user#usersLocationMet'
   match 'user/historyOfUsersMeet' => 'user#historyOfUsersMeet'
   match 'user/recordUserLocation' => 'user#recordUserLocation'
@@ -68,9 +67,12 @@ Meets::Application.routes.draw do
   match 'user/getLatestLocation' => 'user#getLatestLocation'
 
   match 'user/restorePassword' => 'user#restorePassword'
+  match 'user/getReportReasons' => 'user#getReportReasons'
 
   match 'event/createEvent' => 'event#createEvent'
   match 'event/deleteEvent' => 'event#deleteEvent'
+  match 'event/report_event' => 'event#report_event'
+
   match 'event/uploadEventImage' => 'event#uploadEventImage'
   match 'event/deleteEventImage' => 'event#deleteEventImage'
   match 'event/saveTimeCapsule' => 'event#saveTimeCapsule'
