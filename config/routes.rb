@@ -68,6 +68,9 @@ Meets::Application.routes.draw do
   match 'user/userMeetStrangers' => 'user#userMeetStrangers'
   match 'user/getLatestLocation' => 'user#getLatestLocation'
 
+  match 'user/getUserBlackList' => 'user#getUserBlackList'
+  match 'user/removeSpecificBlackList' => 'user#removeSpecificBlackList'
+
   match 'user/restorePassword' => 'user#restorePassword'
   match 'user/getReportReasons' => 'user#getReportReasons'
 

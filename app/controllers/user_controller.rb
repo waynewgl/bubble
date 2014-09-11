@@ -9,6 +9,77 @@ class UserController < ApplicationController
   end
 
 
+  def getUserBlackList
+
+    msg = Hash.new
+
+    if  params[:user_id].nil?   || params[:passport_token].nil?
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      blackLists = BlackList.where("user_id = ?", params[:user_id])
+
+      if blackLists.nil?
+
+        msg[:response] = CodeHelper.CODE_FAIL
+        msg[:description] = "返回成功."
+        msg[:blackLists] = ""
+        render :json =>  msg.to_json
+      else
+
+        msg[:response] = CodeHelper.CODE_SUCCESS
+        msg[:description] = "返回成功."
+        msg[:blackLists] = blackLists
+        render :json =>  msg.to_json
+      end
+    end
+
+  end
+
+
+  def removeSpecificBlackList
+
+    msg = Hash.new
+
+    if  params[:user_id].nil? || params[:stranger_id].nil?    || params[:passport_token].nil?
+      arr_params = [ "user_id","stranger_id",  "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token, stranger_id"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+         removeBlackList = BlackList.where("user_id = ? && stranger_id = ?", params[:user_id], params[:stranger_id]).first
+
+        if removeBlackList.delete
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "移除黑名单成功."
+          render :json =>  msg.to_json
+          return
+        else
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "移除黑名单失败."
+          render :json =>  msg.to_json
+          return
+        end
+
+    end
+  end
+
   def getReportReasons
 
     msg = Hash.new
