@@ -126,7 +126,7 @@ class UserController < ApplicationController
 
       if checkUser
 
-        reportUser = UserReport.where("stranger_id = ? && user_id = ?", params[:event_id], params[:user_id]).first
+        reportUser = UserReport.where("stranger_id = ? && user_id = ?", params[:stranger_id], params[:user_id]).first
 
         if !reportUser.nil?
 
@@ -154,15 +154,56 @@ class UserController < ApplicationController
           render :json =>  msg.to_json
           return
         end
-
       end
     end
   end
 
 
-  def BlackList
+  def blackList
 
+    msg = Hash.new
 
+    if params[:stranger_id].nil? ||  params[:user_id].nil? || params[:passport_token].nil?
+
+      arr_params = ["stranger_id", "user_id", "passport token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请填写所需参数..."
+      render :json =>  msg.to_json
+      return
+    else
+
+      checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+      if checkUser
+
+        userBlackList = BlackList.where("stranger_id = ? && user_id = ?", params[:stranger_id], params[:user_id]).first
+        if !userBlackList.nil?
+
+          msg[:response] = CodeHelper.CODE_REPORT_REPEAT
+          msg[:description] = "你已经添加过该用户"
+          render :json =>  msg.to_json
+          return
+        end
+
+        userBlackList = BlackList.new
+        userBlackList.stranger_id = params[:stranger_id]
+        userBlackList.user_id = params[:user_id]
+
+        if userBlackList.save
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "已添加黑名单"
+          render :json =>  msg.to_json
+          return
+
+        else
+          msg[:response] = CodeHelper.CODE_FAIL
+          msg[:description] = "添加黑名单失败"
+          render :json =>  msg.to_json
+          return
+        end
+      end
+    end
   end
 
 
@@ -894,6 +935,8 @@ class UserController < ApplicationController
 
             user = User.where("id = ?", userGroup.stranger_id).first
 
+            userBlackList = BlackList.where("stranger_id = ? && user_id = ?", userGroup.stranger_id, userGroup.user_id).first
+
             if user.nil?
 
               dic_user[:stranger] = ""
@@ -915,7 +958,10 @@ class UserController < ApplicationController
               dic_user[:user_address_meet] = userMeetAddress
             end
 
-            usersMeets <<  dic_user
+            if userBlackList.nil?
+
+              usersMeets <<  dic_user
+            end
           end
 
           msg[:response] = CodeHelper.CODE_SUCCESS
@@ -988,7 +1034,12 @@ class UserController < ApplicationController
             dic_user[:meet_time] =  userGroup.meet_time.localtime
             dic_user[:total_meet] =  userGroup.total_meet
 
-            arr_users <<  dic_user
+            userBlackList = BlackList.where("stranger_id = ? && user_id = ?", userGroup.stranger_id, userGroup.user_id).first
+
+            if userBlackList.nil? &&  !user.nil?
+
+              arr_users <<  dic_user
+            end
           end
         end
 
