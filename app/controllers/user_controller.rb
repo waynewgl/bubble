@@ -9,6 +9,31 @@ class UserController < ApplicationController
   end
 
 
+  def checkUpdate
+
+    msg = Hash.new
+
+    if  params[:user_id].nil?   || params[:passport_token].nil?
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      msg[:response] = CodeHelper.CODE_SUCCESS
+      msg[:version] = 1.0
+      msg[:trackUrl] = "http://itunes.apple.com/"
+      render :json =>  msg.to_json
+    end
+
+  end
+
+
   def getUserBlackList
 
     msg = Hash.new

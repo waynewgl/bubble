@@ -318,18 +318,23 @@ class EventController < ApplicationController
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "返回事件成功"
         msg[:event] = event_timeCapsule
+        msg[:user] = checkUser
         render :json =>  msg
         return
       else
 
         msg[:response] =CodeHelper.CODE_EVENT_FAIL
         msg[:description] = "返回事件失败"
+        msg[:event] = ""
+        msg[:user] = ""
         render :json =>  msg
         return
       end
     else
 
       msg[:response] =CodeHelper.CODE_FAIL
+      msg[:event] = ""
+      msg[:user] = ""
       msg[:description] = "用户不存在"
       render :json =>  msg
       return
