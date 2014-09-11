@@ -935,7 +935,7 @@ class UserController < ApplicationController
 
             user = User.where("id = ?", userGroup.stranger_id).first
 
-            userBlackList = BlackList.where("stranger_id = ? && user_id = ?", userGroup.stranger_id, userGroup.user_id).first
+            userBlackList = BlackList.where("(stranger_id = ? && user_id = ?) or (stranger_id = ? && user_id = ?)", userGroup.stranger_id, userGroup.user_id, userGroup.user_id, userGroup.stranger_id).first
 
             if user.nil?
 
@@ -1034,7 +1034,7 @@ class UserController < ApplicationController
             dic_user[:meet_time] =  userGroup.meet_time.localtime
             dic_user[:total_meet] =  userGroup.total_meet
 
-            userBlackList = BlackList.where("stranger_id = ? && user_id = ?", userGroup.stranger_id, userGroup.user_id).first
+            userBlackList = BlackList.where("(stranger_id = ? && user_id = ?) or (stranger_id = ? && user_id = ?)", userGroup.stranger_id, userGroup.user_id, userGroup.user_id, userGroup.stranger_id).first
 
             if userBlackList.nil? &&  !user.nil?
 
