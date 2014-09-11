@@ -47,7 +47,6 @@ Meets::Application.configure do
       :enable_starttls_auto => true
   }
 
-  ActionMailer::Base.default_content_type = "text/html"
-
+  ActionMailer::Base.default :content_type => "text/html"
 
 end

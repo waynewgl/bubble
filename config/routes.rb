@@ -57,6 +57,8 @@ Meets::Application.routes.draw do
   match 'user/userLogout' => 'user#userLogout'
   match 'user/upload_avatar_ios' => 'user#upload_avatar_ios'
   match 'user/recordLocation' => 'user#recordLocation'
+  match 'user/report_user' => 'user#report_user'
+  match 'user/blackList' => 'user#blackList'
   match 'user/usersLocationMet' => 'user#usersLocationMet'
   match 'user/historyOfUsersMeet' => 'user#historyOfUsersMeet'
   match 'user/recordUserLocation' => 'user#recordUserLocation'

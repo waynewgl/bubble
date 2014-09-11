@@ -111,9 +111,59 @@ class UserController < ApplicationController
 
   def reportUser
 
+    msg = Hash.new
 
+    if params[:stranger_id].nil? ||  params[:user_id].nil? ||  params[:reason].nil?  || params[:passport_token].nil?
+
+      arr_params = ["stranger_id", "user_id", "reason", "passport token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请填写所需参数..."
+      render :json =>  msg.to_json
+      return
+    else
+
+      checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+      if checkUser
+
+        reportUser = UserReport.where("stranger_id = ? && user_id = ?", params[:event_id], params[:user_id]).first
+
+        if !reportUser.nil?
+
+          msg[:response] = CodeHelper.CODE_REPORT_REPEAT
+          msg[:description] = "你已经举报过了"
+          render :json =>  msg.to_json
+          return
+        end
+
+        reportUser = UserReport.new
+        reportUser.stranger_id = params[:stranger_id]
+        reportUser.user_id = params[:user_id]
+        reportUser.reason = params[:reason]
+
+        if reportUser.save
+
+          msg[:response] = CodeHelper.CODE_SUCCESS
+          msg[:description] = "举报成功"
+          render :json =>  msg.to_json
+          return
+
+        else
+          msg[:response] = CodeHelper.CODE_FAIL
+          msg[:description] = "举报失败"
+          render :json =>  msg.to_json
+          return
+        end
+
+      end
+    end
   end
 
+
+  def BlackList
+
+
+  end
 
 
   def findUUID
