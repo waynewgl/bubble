@@ -288,9 +288,9 @@ class EventController < ApplicationController
 
     msg = Hash.new
 
-    if  params[:user_id].nil? ||  params[:passport_token].nil?
+    if  params[:user_id].nil? ||  params[:passport_token].nil?  ||  params[:stranger_id].nil?
 
-      arr_params = [ "user_id", "passport_token"]
+      arr_params = [ "user_id", "passport_token", "stranger_id"]
       msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
       msg[:description] = "请提供所需参数"
       render :json =>  msg.to_json
@@ -298,6 +298,23 @@ class EventController < ApplicationController
     end
 
 
+    usersMeetDistinct = MeetGroup.find_by_sql("SELECT *, count(stranger_id) as total_meet  FROM meet_groups WHERE user_id = #{params[:user_id]} and stranger_id =#{params[:stranger_id]} GROUP BY user_id, stranger_id ORDER BY meet_time desc").first
+
+    if usersMeetDistinct.nil?
+
+      msg[:response] = CodeHelper.CODE_FAIL
+      msg[:description] = "你还没偶遇过谁"
+      msg[:usersMeet] = ""
+      render :json =>  msg.to_json
+      return
+    else
+
+      msg[:response] = CodeHelper.CODE_SUCCESS
+      msg[:description] = "你偶遇过了这些人"
+      msg[:usersMeet] = usersMeetDistinct
+      render :json =>  msg.to_json
+      return
+    end
 
   end
 

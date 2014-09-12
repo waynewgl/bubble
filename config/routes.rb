@@ -81,6 +81,8 @@ Meets::Application.routes.draw do
   match 'event/deleteEvent' => 'event#deleteEvent'
   match 'event/report_event' => 'event#report_event'
 
+  match 'event/getUserEventWithDetail' => 'event#getUserEventWithDetail'
+
   match 'event/uploadEventImage' => 'event#uploadEventImage'
   match 'event/deleteEventImage' => 'event#deleteEventImage'
   match 'event/saveTimeCapsule' => 'event#saveTimeCapsule'
