@@ -284,6 +284,23 @@ class EventController < ApplicationController
     end
   end
 
+  def getUserEventWithDetail
+
+    msg = Hash.new
+
+    if  params[:user_id].nil? ||  params[:passport_token].nil?
+
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需参数"
+      render :json =>  msg.to_json
+      return
+    end
+
+
+
+  end
+
 
   api :POST, "/event/getUsersEvents", "用户events list (时光胶囊)"
 
@@ -318,23 +335,18 @@ class EventController < ApplicationController
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "返回事件成功"
         msg[:event] = event_timeCapsule
-        msg[:user] = checkUser
         render :json =>  msg
         return
       else
 
         msg[:response] =CodeHelper.CODE_EVENT_FAIL
         msg[:description] = "返回事件失败"
-        msg[:event] = ""
-        msg[:user] = ""
         render :json =>  msg
         return
       end
     else
 
       msg[:response] =CodeHelper.CODE_FAIL
-      msg[:event] = ""
-      msg[:user] = ""
       msg[:description] = "用户不存在"
       render :json =>  msg
       return
