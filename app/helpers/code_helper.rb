@@ -116,4 +116,15 @@ module CodeHelper
     return @response
   end
 
+
+  def self.ENCRYPT_KEY
+
+    return '/kbB2bHmPmSUySB/ljTdXnUm4XgZGDEgDR2K8tUjIG8='
+  end
+
+  def self.ENCRYPT_IV
+
+    return '5BW34xQT0gatH358UkJoUA=='
+  end
+
 end

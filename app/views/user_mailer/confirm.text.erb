@@ -1,3 +1,10 @@
-UserMailer#confirm
+时光偶遇应用管理员:
 
-<%= @user.nickname %>, 你的注册邮箱为<%= @user.account %> 密码为 <%= @user.password %>
+尊敬的用户，
+<%=  @user[:nickname] %>
+
+您的注册邮箱为<%= @user[:account] %>
+
+密码为  <%= @user[:password]%>
+
+请妥善保管您的密码，谢谢您的使用

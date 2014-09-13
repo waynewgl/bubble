@@ -1,4 +1,7 @@
 #encoding: UTF-8
+require "openssl"
+require 'base64'
+
 class UserController < ApplicationController
   protect_from_forgery
   include CodeHelper
@@ -8,6 +11,55 @@ class UserController < ApplicationController
 
   end
 
+
+  def  encryptAndDecryptCodeOperaionTest
+
+    pas =   encryptCodeOperation("hello  this is a joke @@@@@")
+
+    logger.info "getting password #{pas}  and restore #{decryptCodeOperation(pas)}"
+
+
+  end
+
+  def encryptCodeOperation(password)
+
+    cipher = OpenSSL::Cipher::Cipher
+
+# AES, block size = 256，使用 CBC
+    aes = cipher.new('aes-256-cbc').encrypt
+# 随机生成密钥
+
+    key = Base64.decode64(CodeHelper.ENCRYPT_KEY)
+    iv=  Base64.decode64(CodeHelper.ENCRYPT_IV)
+
+    aes.key = key
+    aes.iv = iv
+
+
+    crypted = aes.update(password)
+    crypted.<< aes.final
+
+    return crypted
+  end
+
+
+  def decryptCodeOperation(password)
+
+    cipher = OpenSSL::Cipher::Cipher
+
+    aes = cipher.new('aes-256-cbc').decrypt
+
+    key = Base64.decode64(CodeHelper.ENCRYPT_KEY)
+    iv=  Base64.decode64(CodeHelper.ENCRYPT_IV)
+
+    aes.key = key
+    aes.iv = iv
+
+    result = aes.update(password)
+    result.<< aes.final
+
+    return result
+  end
 
   def checkUpdate
 
@@ -145,10 +197,11 @@ class UserController < ApplicationController
       return
     end
 
+    @restore_user = Hash.new
 
-    @user = User.where("account = ?", params[:account]).first
+    user = User.where("account = ?", params[:account]).first
 
-    if @user.nil?
+    if user.nil?
 
       msg[:response] = CodeHelper.CODE_FAIL
       msg[:description] = "返回密码失败,邮箱不正确"
@@ -156,7 +209,11 @@ class UserController < ApplicationController
       return
     else
 
-      UserMailer.confirm(@user, "返回密码").deliver
+      @restore_user[:account] = user.account
+      @restore_user[:nickname] = user.nickname
+      @restore_user[:password] = decryptCodeOperation(Base64.decode64(user.password))
+
+      UserMailer.confirm( @restore_user, "返回密码").deliver
       msg[:response] = CodeHelper.CODE_SUCCESS
       msg[:description] = "已经返回密码到你的邮箱，请查看"
       render :json =>  msg.to_json
@@ -184,7 +241,7 @@ class UserController < ApplicationController
     if checkUser
 
       user = User.find_by_id(params[:user_id])
-      user.password = Digest::SHA1.hexdigest(params[:password])
+      user.password = Base64.encode64(encryptCodeOperation(params[:password]))
 
       if user.save
 
@@ -345,7 +402,7 @@ class UserController < ApplicationController
 
       new_user = User.new
       new_user.account = params[:account]
-      new_user.password =  Digest::SHA1.hexdigest(params[:password])
+      new_user.password =  Base64.encode64(encryptCodeOperation(params[:password]))
       new_user.email = params[:email]
       new_user.nickname = params[:nickname]
       new_user.uuid = params[:device_uuid]
@@ -401,7 +458,9 @@ class UserController < ApplicationController
       return
     end
 
-    user = User.where("account = ? and password = ?", params[:account], Digest::SHA1.hexdigest(params[:password]) ).first
+    login_password =  Base64.encode64(encryptCodeOperation(params[:password]))
+
+    user = User.where("account = ? and password = ?", params[:account], login_password).first
 
     if user.nil?
 

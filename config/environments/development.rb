@@ -38,11 +38,11 @@ Meets::Application.configure do
   ActionMailer::Base.delivery_method = :smtp
 
   config.action_mailer.smtp_settings = {
-      :address => "smtp.gmail.com",
-      :port => "587",
-      :domain => "gmail.com",
-      :authentication => "plain",
-      :user_name => "waynewgl@gmail.com",
+      :address => "smtp.163.com",
+      :port => "25",
+      :domain => "163.com",
+      :authentication => :login,
+      :user_name => "waynewgl",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }

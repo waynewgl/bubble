@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "waynewgl@gmail.com"
+  default from: "waynewgl@163.com"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -9,7 +9,7 @@ class UserMailer < ActionMailer::Base
   def confirm(user,subject)
 
     @user = user
-    mail(:to => user.account, :subject => "#{subject}")
+    mail(:to => user[:account], :subject => "#{subject}")
 
   end
 end
