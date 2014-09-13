@@ -14,10 +14,9 @@ class UserController < ApplicationController
 
   def  encryptAndDecryptCodeOperaionTest
 
-    pas =   encryptCodeOperation("hello  this is a joke @@@@@")
+    pas =   encryptCodeOperation("abc")
 
-    logger.info "getting password #{pas}  and restore #{decryptCodeOperation(pas)}"
-
+    logger.info "getting password #{pas}  and restore #{Base64.encode64(pas)}"
 
   end
 
