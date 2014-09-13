@@ -351,7 +351,17 @@ class EventController < ApplicationController
 
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "返回事件成功"
-        msg[:event] = event_timeCapsule
+
+        if params[:limit_count].nil? || params[:limit_count].blank?
+
+          msg[:event] = event_timeCapsule
+
+        else
+
+          msg[:event] = event_timeCapsule.limit(params[:limit_count])
+        end
+
+        msg[:event_count] = event_timeCapsule.count
         render :json =>  msg
         return
       else

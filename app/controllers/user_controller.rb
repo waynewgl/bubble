@@ -1016,6 +1016,7 @@ class UserController < ApplicationController
           msg[:response] = CodeHelper.CODE_FAIL
           msg[:description] = "你还没偶遇过谁"
           msg[:users] = ""
+          msg[:limit_count] = 0
           render :json =>  msg.to_json
           return
         else
@@ -1062,7 +1063,23 @@ class UserController < ApplicationController
 
           msg[:response] = CodeHelper.CODE_SUCCESS
           msg[:description] = "返回偶遇对象"
-          msg[:users] = usersMeets
+
+          if params[:limit_count].nil? || params[:limit_count].blank?
+
+            msg[:users] = usersMeets
+          else
+
+            countArrMeet = params[:limit_count].to_i
+
+            if countArrMeet > usersMeets.count
+
+              countArrMeet = usersMeets.count
+            end
+
+            msg[:users] = usersMeets.take(countArrMeet)
+          end
+
+          msg[:limit_count] = usersMeets.count
           render :json =>  msg.to_json
           return
         end
@@ -1109,6 +1126,7 @@ class UserController < ApplicationController
         msg[:response] = CodeHelper.CODE_FAIL
         msg[:description] = "你还没偶遇过谁"
         msg[:users] = ""
+        msg[:limit_count] = 0
         render :json =>  msg.to_json
         return
       else
@@ -1141,7 +1159,23 @@ class UserController < ApplicationController
 
         msg[:response] = CodeHelper.CODE_SUCCESS
         msg[:description] = "返回偶遇用户"
-        msg[:users] = arr_users
+        msg[:limit_count] =  arr_users.count
+
+        if params[:limit_count].nil? || params[:limit_count].blank?
+
+          msg[:users] = arr_users
+        else
+
+          countArr = params[:limit_count].to_i
+
+          if countArr > arr_users.count
+
+            countArr = arr_users.count
+          end
+
+          msg[:users] = arr_users.take(countArr)
+        end
+
         render :json =>  msg.to_json
         return
       end
