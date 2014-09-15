@@ -45,7 +45,13 @@ class Event < ActiveRecord::Base
 
     user = User.find_by_id(self.user_id)
 
-    return user
+    if user.nil?
+
+      return ""
+    else
+
+      return user
+    end
   end
 
   def getEventLocations
