@@ -193,7 +193,24 @@ class EventController < ApplicationController
         msg[:description] = "返回事件成功"
         msg[:user_distance] = CodeHelper.USER_DISTANCE
         msg[:distance_update_meter] = CodeHelper.DISTANCE_METER_UPDATE
-        msg[:events] = arr_timeCapsules
+
+        if params[:limit_count].nil? || params[:limit_count].blank?
+
+          msg[:events] = arr_timeCapsules
+
+        else
+
+          countArrCapsule = params[:limit_count].to_i
+
+          if countArrCapsule > arr_timeCapsules.count
+
+            countArrCapsule = arr_timeCapsules.count
+          end
+
+          msg[:events] = arr_timeCapsules.take(countArrCapsule)
+        end
+
+        msg[:event_count] = arr_timeCapsules.count
         render :json =>  msg
         return
       else
