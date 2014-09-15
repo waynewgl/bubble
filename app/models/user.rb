@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
 
   def checkNickName
 
-    if self.nickname.nil?
+    if self.nickname.nil? || self.nickname.blank?
 
       return "路人#{self.id}号"
     else
