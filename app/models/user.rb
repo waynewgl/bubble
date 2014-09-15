@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
 
     if self.nickname.nil? || self.nickname.blank?
 
-      return "路人#{self.id}号"
+      return "路人NO.#{self.id}"
     else
 
       return self.nickname
