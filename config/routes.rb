@@ -73,6 +73,8 @@ Meets::Application.routes.draw do
 
   match 'user/encryptAndDecryptCodeOperaionTest' => 'user#encryptAndDecryptCodeOperaionTest'
 
+  match 'user/userFeedback' => 'user#userFeedback'
+
 
   match 'user/getUserBlackList' => 'user#getUserBlackList'
   match 'user/removeSpecificBlackList' => 'user#removeSpecificBlackList'

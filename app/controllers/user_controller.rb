@@ -12,6 +12,7 @@ class UserController < ApplicationController
   end
 
 
+
   def  encryptAndDecryptCodeOperaionTest
 
     pas =   encryptCodeOperation("abc")
@@ -82,6 +83,40 @@ class UserController < ApplicationController
       render :json =>  msg.to_json
     end
 
+  end
+
+  def userFeedback
+
+    msg = Hash.new
+
+    if  params[:user_id].nil?   || params[:passport_token].nil?  || params[:content].nil?
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+      feedBack = FeedBack.new
+      feedBack.user_id = params[:user_id]
+      feedBack.content = params[:content]
+
+      if !feedBack.save
+
+        msg[:response] = CodeHelper.CODE_FAIL
+        msg[:description] = "反馈保存失败."
+        render :json =>  msg.to_json
+      else
+
+        msg[:response] = CodeHelper.CODE_SUCCESS
+        msg[:description] = "反馈保存成功."
+        render :json =>  msg.to_json
+      end
+    end
   end
 
 
@@ -199,6 +234,8 @@ class UserController < ApplicationController
     @restore_user = Hash.new
 
     user = User.where("account = ?", params[:account]).first
+
+    logger.info "find user #{user.account}"
 
     if user.nil?
 
