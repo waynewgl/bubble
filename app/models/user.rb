@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
 
     if self.nickname.nil?
 
-      return "未命名"
+      return "陌生人No.#{self.id}"
 
     else
 
