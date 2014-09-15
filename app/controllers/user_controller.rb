@@ -207,7 +207,7 @@ class UserController < ApplicationController
 
     if checkUser
 
-      arr_report_reason = ["垃圾营销","淫秽色情","骚扰信息","人身攻击","敏感信息", "泄露隐私"]
+      arr_report_reason = ["垃圾营销","成人内容","骚扰信息","人身攻击","敏感信息", "泄露隐私"]
 
       msg[:response] = CodeHelper.CODE_SUCCESS
       msg[:description] = "返回成功."
