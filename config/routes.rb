@@ -75,6 +75,8 @@ Meets::Application.routes.draw do
 
   match 'user/userFeedback' => 'user#userFeedback'
 
+  match 'user/pushTest_development' => 'user#pushTest_development'
+  match 'user/pushTest_production' => 'user#pushTest_production'
 
   match 'user/getUserBlackList' => 'user#getUserBlackList'
   match 'user/removeSpecificBlackList' => 'user#removeSpecificBlackList'

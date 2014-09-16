@@ -12,6 +12,43 @@ class UserController < ApplicationController
   end
 
 
+  api :POST, "/user/pushTest_development", "测试通知推送服务"
+
+  param :token, String, "用户的设备TOKEN", :required => true
+
+  description <<-EOS
+
+  EOS
+
+  def  pushTest_development
+
+    deviceToken = params[:token]
+
+    if !params[:host].nil?
+
+      deviceToken = "4adc709a2621aac0a831004d6dc7126e25047406f4b8b8aea7ceb987d0b8f7c8"
+    end
+
+    certificateFile =  "certificate_meet_dev.pem"
+    content = params[:content].nil? ? "development environment testing":params[:content]
+    certificate =   certificateFile
+    devicetoken =   deviceToken
+    environment = "development"
+    pushNotification(certificate, devicetoken, environment, content)
+  end
+
+
+  def  pushTest_production
+
+    deviceToken = params[:token]
+    certificate_env = "certificate_meet_pro.pem"
+    content = params[:content].nil? ? "production environment testing":params[:content]
+    certificate =   certificate_env
+    devicetoken =   deviceToken
+    environment = "production"
+    pushNotification(certificate, devicetoken, environment, content)
+  end
+
 
   def  encryptAndDecryptCodeOperaionTest
 
