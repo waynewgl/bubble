@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
 
   def pushNotification(certificate_name, device_token, env, content)
 
+    logger.info "test"
+
     if env == "development"
 
       s_gateway = "gateway.sandbox.push.apple.com"
