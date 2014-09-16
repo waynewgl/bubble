@@ -817,7 +817,7 @@ class UserController < ApplicationController
   EOS
   def recordUserLocation
 
-    logger.info "do we get format  date #{Date.parse(params[:start_time])}  and time  #{Time.parse(params[:start_time])}  "
+    #logger.info "do we get format  date #{Date.parse(params[:start_time])}  and time  #{Time.parse(params[:start_time])}  "
 
     msg = Hash.new
 
