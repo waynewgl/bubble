@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
 
     url =  self.avatar.url.to_s
 
-    if  url == '/avatars/original/missing.png'
+    if  url == '/avatars/original/missing.png'  || url.nil?
 
       return ""
 
