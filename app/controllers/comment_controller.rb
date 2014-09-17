@@ -30,14 +30,14 @@ class CommentController < ApplicationController
         push_user_owner = User.find_by_id(sendOwnerPush.user_id)            # get the event creator
         eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
 
-        pushTest_development_for_comment(push_user_owner.uuid, "你的时光胶囊(处于#{eloc.address})有了新的留言")
+        pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言")
 
         sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id")
 
         for passby in sendPushToOtherPassbys
 
           user =  User.find_by_id(passby.user_id)
-          pushTest_development_for_comment(user.uuid, "你曾经留言在时光胶囊(处于#{eloc.address})有了其他留言")
+          pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
         end
 
         #logger.info "push user_id #{push_user_owner.uuid}  and #{push_user_sender.uuid}"
