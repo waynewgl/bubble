@@ -37,11 +37,7 @@ class CommentController < ApplicationController
         for passby in sendPushToOtherPassbys
 
           user =  User.find_by_id(passby.user_id)
-
-          if  passby.user_id.to_i !=  sendOwnerPush.user_id.to_i
-
-            pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
-          end
+          pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
         end
 
         #logger.info "push user_id #{push_user_owner.uuid}  and #{push_user_sender.uuid}"
