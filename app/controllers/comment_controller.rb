@@ -36,7 +36,7 @@ class CommentController < ApplicationController
 
         for passby in sendPushToOtherPassbys
 
-          user_id = passby.user_id
+          user_id = passby.user_id.to_i
 
           user =  User.where("id = ?", user_id).first
 
