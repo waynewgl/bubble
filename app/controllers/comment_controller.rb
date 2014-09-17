@@ -34,18 +34,6 @@ class CommentController < ApplicationController
 
         sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id")
 
-        for passby in sendPushToOtherPassbys
-
-          user_id = passby.user_id.to_i
-
-          user =  User.where("id = ?", user_id).first
-
-          if  user_id !=  ownerEvent.user_id.to_i
-
-            pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
-          end
-        end
-
         #logger.info "push user_id #{push_user_owner.uuid}  and #{push_user_sender.uuid}"
 
         msg[:response] =CodeHelper.CODE_SUCCESS
