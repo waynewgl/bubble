@@ -26,8 +26,8 @@ class CommentController < ApplicationController
 
       if newComment.save
 
-        sendOwnerPush = Event.find_by_id(newComment.event_id)   #get the commented event
-        push_user_owner = User.find_by_id(sendOwnerPush.user_id)            # get the event creator
+        ownerEvent = Event.find_by_id(newComment.event_id)   #get the commented event
+        push_user_owner = User.find_by_id(ownerEvent.user_id)            # get the event creator
         eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
 
         pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言")
@@ -36,8 +36,14 @@ class CommentController < ApplicationController
 
         for passby in sendPushToOtherPassbys
 
-          user =  User.find_by_id(passby.user_id)
-          pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
+          user_id = passby.user_id.to_i
+
+          user =  User.where("id = ?", user_id).first
+
+          if  user_id !=  ownerEvent.user_id.to_i
+
+            pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
+          end
         end
 
         #logger.info "push user_id #{push_user_owner.uuid}  and #{push_user_sender.uuid}"
