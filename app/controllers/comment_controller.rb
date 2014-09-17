@@ -170,12 +170,22 @@ class CommentController < ApplicationController
 
     if checkUser
 
-      comments = Comment.where("event_id = ?", params[:event_id]).order("created_at asc")
+      comments = Comment.where("event_id = ?", params[:event_id]).order("created_at desc")
 
       if comments.count >  0
 
         msg[:response] =CodeHelper.CODE_SUCCESS
-        msg[:comments] =comments
+
+        if params[:limit_count].nil? || params[:limit_count].blank?  || params[:limit_count] == 0
+
+          msg[:comments] =comments
+        else
+
+          arr_comments_to_sort = comments.limit(params[:limit_count].to_i)
+          msg[:comments] = arr_comments_to_sort.reverse
+        end
+
+        msg[:total_count] = comments.count
         msg[:description] = "留言返回成功"
         render :json =>  msg
         return
@@ -183,6 +193,7 @@ class CommentController < ApplicationController
 
         msg[:response] =CodeHelper.CODE_FAIL
         msg[:comments] =""
+        msg[:total_count] = 0
         msg[:description] = "还没有人评论"
         render :json =>  msg
         return
