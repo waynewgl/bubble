@@ -38,7 +38,7 @@ class CommentController < ApplicationController
 
           user =  User.find_by_id(passby.user_id)
 
-          if  passby.user_id !=  push_user_owner.id
+          if  passby.user_id !=  sendOwnerPush.user_id
 
             pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
           end
