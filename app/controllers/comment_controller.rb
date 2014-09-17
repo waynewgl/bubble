@@ -26,6 +26,22 @@ class CommentController < ApplicationController
 
       if newComment.save
 
+        sendOwnerPush = Event.find_by_id(newComment.event_id)   #get the commented event
+        push_user_owner = User.find_by_id(sendOwnerPush.user_id)            # get the event creator
+        eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
+
+        pushTest_development_for_comment(push_user_owner.uuid, "你的时光胶囊(处于#{eloc.address})有了新的留言")
+
+        sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id")
+
+        for passby in sendPushToOtherPassbys
+
+          user =  User.find_by_id(passby.user_id)
+          pushTest_development_for_comment(user.uuid, "你曾经留言在时光胶囊(处于#{eloc.address})有了其他留言")
+        end
+
+        #logger.info "push user_id #{push_user_owner.uuid}  and #{push_user_sender.uuid}"
+
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "评论成功"
         render :json =>  msg
@@ -40,6 +56,17 @@ class CommentController < ApplicationController
     end
   end
 
+  def  pushTest_development_for_comment(device_token,content)
+
+
+    logger.info "sending info to #{device_token} "
+    certificateFile =  "certificate_meet_dev.pem"
+    #content = params[:content].nil? ? "development environment testing":params[:content]
+    certificate =   certificateFile
+    devicetoken =   device_token
+    environment = "development"
+    pushNotification(certificate, devicetoken, environment, content)
+  end
 
   def deleteComment
 

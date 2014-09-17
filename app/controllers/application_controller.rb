@@ -36,14 +36,7 @@ class ApplicationController < ActionController::Base
         content_available: true                  # optional; any truthy value will set 'content-available' to 1
     )
 
-    if  !pusher.push(notification)
-
-      render :inline => "push nontification in #{env} fail"
-    else
-
-      render :inline => "push nontification in #{env}  succeed, sending #{content}"
-    end
-
+    pusher.push(notification)
   end
 
 

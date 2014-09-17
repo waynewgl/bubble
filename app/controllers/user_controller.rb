@@ -460,9 +460,9 @@ class UserController < ApplicationController
 
     msg = Hash.new
 
-    if params[:account].nil? ||  params[:password].nil? ||  params[:device_uuid].nil?
+    if params[:account].nil? ||  params[:password].nil? ||  params[:device_token].nil?
 
-      arr_params = ["account", "password", "device_uuid"]
+      arr_params = ["account", "password", "device_token"]
       msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
       msg[:description] = "请填写所需信息..."
       render :json =>  msg.to_json
@@ -478,7 +478,7 @@ class UserController < ApplicationController
       new_user.password =  Base64.encode64(encryptCodeOperation(params[:password]))
       new_user.email = params[:email]
       new_user.nickname = params[:nickname]
-      new_user.uuid = params[:device_uuid]
+      new_user.uuid = params[:device_token]
       #new_user.uuid = new_user.generate_major
 
       if new_user.save
@@ -522,9 +522,9 @@ class UserController < ApplicationController
 
     msg = Hash.new
 
-    if params[:account].nil? ||  params[:password].nil?  ||  params[:device_uuid].nil?
+    if params[:account].nil? ||  params[:password].nil?  ||  params[:device_token].nil?
 
-      arr_params = ["account", "password", "device_uuid"]
+      arr_params = ["account", "password", "device_token"]
       msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
       msg[:description] = "请填写所需信息..."
       render :json =>  msg.to_json
@@ -561,6 +561,7 @@ class UserController < ApplicationController
         msg[:passport_token] =  user.generate_token
         user.update_attribute(:passport_token, msg[:passport_token] )
         user.update_attribute("is_loggedin", "yes")
+        user.update_attribute(:uuid, params[:device_token])
         msg[:user] = user
         msg[:description] = "登陆成功"
         render :json =>  msg.to_json
