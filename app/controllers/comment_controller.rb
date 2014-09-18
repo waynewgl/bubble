@@ -76,7 +76,7 @@ class CommentController < ApplicationController
     certificate =   certificateFile
     devicetoken =   device_token
     environment = "development"
-    pushNotification(certificate, devicetoken, environment, dic_info)
+    pushNotification(certificate, devicetoken, environment, content, dic_info)
   end
 
   def deleteComment
