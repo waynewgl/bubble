@@ -34,7 +34,7 @@ class CommentController < ApplicationController
 
         sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id order by created_at desc")
 
-        comment_trancate =    newComment.content(10)
+        comment_trancate = ownerEvent.content(10)
 
         for passby in sendPushToOtherPassbys
 
