@@ -32,7 +32,7 @@ class CommentController < ApplicationController
 
         pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言")
 
-        sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id")
+        sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id order by created_at desc")
 
         for passby in sendPushToOtherPassbys
 
@@ -40,7 +40,7 @@ class CommentController < ApplicationController
 
           user =  User.where("id = ?", user_id).first
 
-          if  user_id !=  ownerEvent.user_id.to_i
+          if  user_id !=  ownerEvent.user_id.to_i && user.is_loggedin = "yes"
 
             pushTest_development_for_comment(user.uuid, "你曾经留言的  时光胶囊(位于#{eloc.address})  有了新的留言")
           end
