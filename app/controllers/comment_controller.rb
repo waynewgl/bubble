@@ -30,9 +30,14 @@ class CommentController < ApplicationController
         push_user_owner = User.find_by_id(ownerEvent.user_id)            # get the event creator
         eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
 
-        pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言")
+        dic_info = Hash.new
+        dic_info[:event_id] =  newComment.event_id
+
+
+        pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言",dic_info)
 
         sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id order by created_at desc")
+
 
         for passby in sendPushToOtherPassbys
 
@@ -42,7 +47,7 @@ class CommentController < ApplicationController
 
           if  user_id !=  ownerEvent.user_id.to_i && user.is_loggedin = "yes"
 
-            pushTest_development_for_comment(user.uuid, "你曾经留言的时光胶囊 (位于#{eloc.address}) 有了新的留言")
+            pushTest_development_for_comment(user.uuid, "你曾经留言的时光胶囊 (位于#{eloc.address}) 有了新的留言", dic_info)
           end
         end
 
@@ -62,7 +67,7 @@ class CommentController < ApplicationController
     end
   end
 
-  def  pushTest_development_for_comment(device_token,content)
+  def  pushTest_development_for_comment(device_token,content, dic_info)
 
 
     logger.info "sending info to #{device_token} "
@@ -71,7 +76,7 @@ class CommentController < ApplicationController
     certificate =   certificateFile
     devicetoken =   device_token
     environment = "development"
-    pushNotification(certificate, devicetoken, environment, content)
+    pushNotification(certificate, devicetoken, environment, dic_info)
   end
 
   def deleteComment

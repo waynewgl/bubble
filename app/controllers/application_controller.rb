@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
 
-  def pushNotification(certificate_name, device_token, env, content)
+  def pushNotification(certificate_name, device_token, env, content, dic_info)
 
     logger.info "test"
 
@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
 
         device_token:      "#{device_token}",
         alert:             content,
+        custom:            dic_info,
         badge:             1,
         sound:             "siren.aiff",         # optional
         expiry:            Time.now + 60*60,     # optional; 0 is default, meaning the message is not stored
