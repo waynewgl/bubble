@@ -11,7 +11,7 @@ module CodeHelper
 
   def self.DISTANCE_METER_UPDATE
 
-    return 10.0
+    return 50.0
   end
 
 
