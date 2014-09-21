@@ -31,8 +31,7 @@ class CommentController < ApplicationController
         eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
 
         dic_info = Hash.new
-        dic_info[:event_id] =  newComment.event_id
-
+        dic_info[:event] =  ownerEvent
 
         pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言",dic_info)
 
