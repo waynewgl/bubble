@@ -87,6 +87,7 @@ Meets::Application.routes.draw do
   match 'event/createEvent' => 'event#createEvent'
   match 'event/deleteEvent' => 'event#deleteEvent'
   match 'event/report_event' => 'event#report_event'
+  match 'event/loadSpecificEvent' => 'event#loadSpecificEvent'
 
   match 'event/getUserEventWithDetail' => 'event#getUserEventWithDetail'
 

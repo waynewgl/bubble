@@ -76,6 +76,41 @@ class EventController < ApplicationController
   end
 
 
+  def loadSpecificEvent
+
+    msg = Hash.new
+
+    if params[:event_id].nil? || params[:user_id].nil? ||  params[:passport_token].nil?
+
+      arr_params = [ "event_id", "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "请提供所需参数"
+      render :json =>  msg.to_json
+      return
+    end
+    checkUser = checkUserExistBeforeOperationStart(params[:user_id], msg)
+
+    if checkUser
+
+        specificEvent = Event.find_by_id(params[:event_id])
+        if !specificEvent.nil?
+
+          msg[:response] =CodeHelper.CODE_SUCCESS
+          msg[:description] = "返回事件成功"
+          msg[:event] = specificEvent
+          render :json =>  msg
+          return
+        else
+
+          msg[:response] =CodeHelper.CODE_FAIL
+          msg[:description] = "事件不存在"
+          msg[:event] = ""
+          render :json =>  msg
+          return
+        end
+    end
+  end
+
 
   def searchSpecificTimeCapsule
 
