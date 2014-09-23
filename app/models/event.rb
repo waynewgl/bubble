@@ -24,13 +24,13 @@ class Event < ActiveRecord::Base
         post_time: self.updated_at.localtime,
         event_image: self.event_images,
         event_location: self.getEventLocations,
-        event_comment_count: self.countEventComments
+        comment_count: self.comments.count
     }
   end
 
   def countEventComments
 
-    comment_count = Comment.find_by_sql("select count(*) from comments where event_id = #{self.id}")
+    comment_count = Comment.find_by_sql("select count(*) from comments where comments.event_id = #{self.id}")
     return comment_count
   end
 
