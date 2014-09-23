@@ -1273,7 +1273,7 @@ class UserController < ApplicationController
           user = User.where("id = ?", userGroup.stranger_id).first
           dic_user[:user] = user
 
-          if  !userGroup.address.nil? && userGroup.address != "(null)"
+          if  !userGroup.address.nil? && userGroup.address != "(null)" && userGroup.address != "<null>"
 
             dic_user[:meet_address] =  userGroup.address
             dic_user[:meet_time_month] =  userGroup.meet_time.localtime.strftime("%Y-%m-%d")
