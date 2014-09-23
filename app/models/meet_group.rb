@@ -5,7 +5,7 @@ class MeetGroup < ActiveRecord::Base
   def as_json(options={})
     {
 
-        address: self.address,
+        address: self.checkAddress,
         created_at: self.created_at.localtime,
         id: self.id,
         meet_time: self.meet_time,
@@ -16,5 +16,17 @@ class MeetGroup < ActiveRecord::Base
     }
   end
 
+
+  def checkAddress
+
+    if  self.address.nil?
+
+      return ""
+    else
+
+      return self.address
+    end
+
+  end
 
 end
