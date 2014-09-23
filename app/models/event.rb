@@ -24,8 +24,7 @@ class Event < ActiveRecord::Base
         post_time: self.updated_at.localtime,
         event_image: self.event_images,
         event_location: self.getEventLocations,
-        event_comment_count: self.countEventComments,
-
+        event_comment_count: self.countEventComments
     }
   end
 
