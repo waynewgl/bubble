@@ -66,18 +66,6 @@ class CommentController < ApplicationController
     end
   end
 
-  def  pushTest_development_for_comment(device_token,content, dic_info)
-
-
-    logger.info "sending info to #{device_token} "
-    certificateFile =  "certificate_meet_dev.pem"
-    #content = params[:content].nil? ? "development environment testing":params[:content]
-    certificate =   certificateFile
-    devicetoken =   device_token
-    environment = "development"
-    pushNotification(certificate, devicetoken, environment, content, dic_info)
-  end
-
   def deleteComment
 
     msg = Hash.new

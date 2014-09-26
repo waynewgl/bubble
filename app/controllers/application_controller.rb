@@ -3,6 +3,19 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
 
+  def  pushTest_development_for_comment(device_token,content, dic_info)
+
+
+    logger.info "sending info to #{device_token} "
+    certificateFile =  "certificate_meet_dev.pem"
+    #content = params[:content].nil? ? "development environment testing":params[:content]
+    certificate =   certificateFile
+    devicetoken =   device_token
+    environment = "development"
+    pushNotification(certificate, devicetoken, environment, content, dic_info)
+  end
+
+
   def pushNotification(certificate_name, device_token, env, content, dic_info)
 
     logger.info "test"
@@ -90,7 +103,21 @@ class ApplicationController < ActionController::Base
   end
 
 
-   #puts distance [46.3625, 15.114444],[46.055556, 14.508333]
+  def checkIfInBlackList(user1, user2)
+
+    blackUser = BlackList.where("(user_id = ? and stranger_id = ?) or (user_id = ? and stranger_id = ?)", user1, user2, user2, user1 )
+
+    if  blackUser.nil?
+
+      return false
+
+    else
+      return true
+    end
+  end
+
+
+  #puts distance [46.3625, 15.114444],[46.055556, 14.508333]
 
   def distance(a, b)   # (latitude, longittude)
 
