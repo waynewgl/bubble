@@ -29,6 +29,13 @@ module CodeHelper
     return @response
   end
 
+  def self.CODE_FAIL_BLACKLIST
+
+    @response[:code] = "999"
+    @response[:desc] = "操作失败, 你已经被该胶囊持有者拉黑"
+    return @response
+  end
+
   def self.CODE_REFRESH
 
     @response[:code] = "255"

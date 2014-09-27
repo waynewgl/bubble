@@ -19,6 +19,16 @@ class CommentController < ApplicationController
 
     if checkUser
 
+      ownerEvent = Event.find_by_id(params[:event_id])   #get the commented event
+
+      if checkIfInBlackList(ownerEvent.user_id, params[:user_id])
+
+        msg[:response] =CodeHelper.CODE_FAIL_BLACKLIST
+        msg[:description] = "评论失败, 你已经被该评论持有者拉黑"
+        render :json =>  msg
+        return
+      end
+
       newComment = Comment.new
       newComment.event_id = params[:event_id]
       newComment.user_id = params[:user_id]
@@ -26,7 +36,6 @@ class CommentController < ApplicationController
 
       if newComment.save
 
-        ownerEvent = Event.find_by_id(newComment.event_id)   #get the commented event
         push_user_owner = User.find_by_id(ownerEvent.user_id)            # get the event creator
         eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
 
@@ -36,7 +45,6 @@ class CommentController < ApplicationController
         pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言",dic_info)
 
         sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id order by created_at desc")
-
 
         for passby in sendPushToOtherPassbys
 
@@ -51,7 +59,6 @@ class CommentController < ApplicationController
         end
 
         #logger.info "push user_id #{push_user_owner.uuid}  and #{push_user_sender.uuid}"
-
         msg[:response] =CodeHelper.CODE_SUCCESS
         msg[:description] = "评论成功"
         render :json =>  msg

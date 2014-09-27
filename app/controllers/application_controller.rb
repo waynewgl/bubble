@@ -105,7 +105,7 @@ class ApplicationController < ActionController::Base
 
   def checkIfInBlackList(user1, user2)
 
-    blackUser = BlackList.where("(user_id = ? and stranger_id = ?) or (user_id = ? and stranger_id = ?)", user1, user2, user2, user1 )
+    blackUser = BlackList.where("(user_id = ? and stranger_id = ?) or (user_id = ? and stranger_id = ?)", user1, user2, user2, user1 ).first
 
     if  blackUser.nil?
 
