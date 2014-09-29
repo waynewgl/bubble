@@ -36,7 +36,10 @@ class CommentController < ApplicationController
 
       if newComment.save
 
-        ownerEvent.update_attribute(:viewNum, 'true')
+        if ownerEvent.user_id !=   params[:user_id]
+
+          ownerEvent.update_attribute(:viewNum, 'true')
+        end
 
         push_user_owner = User.find_by_id(ownerEvent.user_id)            # get the event creator
         eloc = ELocation.where("event_id = ?", newComment.event_id).first         # get the event location
