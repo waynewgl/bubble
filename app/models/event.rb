@@ -31,13 +31,13 @@ class Event < ActiveRecord::Base
 
   def checkViewNum
 
-    if self.viewNum.nil? || self.viewNum == 'false'
+    if self.viewNum.nil? || self.viewNum == 'true'
 
-      return 'false'
+      return 'true'
 
     else
 
-      return  'true'
+      return  'false'
     end
 
   end
