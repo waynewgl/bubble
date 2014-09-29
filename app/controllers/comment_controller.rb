@@ -46,6 +46,7 @@ class CommentController < ApplicationController
 
         dic_info = Hash.new
         dic_info[:event_id] =  newComment.event_id
+        dic_info[:user_id] =  push_user_owner.id
 
         pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言",dic_info)
 
