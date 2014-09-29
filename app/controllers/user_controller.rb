@@ -844,7 +844,7 @@ class UserController < ApplicationController
       userLocation.latitude =  params[:latitude]
       userLocation.longitude =  params[:longitude]
       userLocation.content =  params[:content]
-      start_date = Time.parse(params[:start_time])
+      start_date = Time.now
       userLocation.start_date = start_date
       userLocation.user_id =  params[:user_id]
 
@@ -1049,6 +1049,10 @@ class UserController < ApplicationController
 
     #logger.info "get distance #{distance([46.3625, 15.114444],[46.055556, 14.508333])}"
 
+    #"current_time" = "2014-09-29 09:29:48 +0800";
+
+    #logger.info "current time is #{Time.now.localtime}"
+
     if params[:user_id].nil? || params[:passport_token].nil? || params[:current_time].nil?
 
       arr_params = ["user_id", "passport_token", "current_time"]
@@ -1058,9 +1062,9 @@ class UserController < ApplicationController
       return
     end
 
-    currentTime =  Time.parse(params[:current_time]).localtime
-    time_from  = currentTime - 0.5.hour
-    time_to  = currentTime + 0.5.hour
+    currentTime =  Time.now.localtime
+    time_from  = currentTime - 0.75.hour
+    time_to  = currentTime + 0.75.hour
 
     usersAround = Location.where("user_id != ?  and start_date >= ?  and start_date <= ? ", params[:user_id], time_from, time_to)
 
