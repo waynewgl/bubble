@@ -1007,7 +1007,7 @@ class UserController < ApplicationController
         checkUsersExist.user_id =  params[:user_id]
         checkUsersExist.stranger_id =  params[:stranger_id]
         checkUsersExist.address =  params[:address]
-        checkUsersExist.meet_time =  Time.parse(params[:meet_time]).localtime
+        checkUsersExist.meet_time =  Time.now.localtime
 
         if checkUsersExist.save
 
