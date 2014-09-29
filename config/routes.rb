@@ -97,6 +97,9 @@ Meets::Application.routes.draw do
   match 'event/getUsersEvents' => 'event#getUsersEvents'
   match 'event/searchTimeCapsule' => 'event#searchTimeCapsule'
   match 'event/searchSpecificTimeCapsule' => 'event#searchSpecificTimeCapsule'
+  match 'event/userHasViewedEvent' => 'event#userHasViewedEvent'
+
+
 
   match 'comment/createComment' => 'comment#createComment'
   match 'comment/deleteComment' => 'comment#deleteComment'
@@ -106,6 +109,8 @@ Meets::Application.routes.draw do
   match 'category/listCategory' => 'category#listCategory'
   match 'category/addCategory' => 'event#addCategory'
 
+
+  match 'help/index' => 'help#index'
 
   # See how all your routes lay out with "rake routes"
 
