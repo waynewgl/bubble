@@ -1,3 +1,5 @@
+#encoding: UTF-8
+
 class UserMailer < ActionMailer::Base
   default from: "waynewgl@163.com"
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -8,7 +10,7 @@ class UserMailer < ActionMailer::Base
   def confirm(user,subject)
 
     @user = user
-    mail(:to => user[:account], :subject => "#{subject}", :from => '时光胶囊开发员@timeCapsule.com')
+    mail(:subject => "#{subject}", :to => user[:account], :from => '时光胶囊开发员@timeCapsule.com')
 
   end
 end
