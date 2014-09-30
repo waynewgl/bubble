@@ -15,6 +15,18 @@ class ApplicationController < ActionController::Base
     pushNotification(certificate, devicetoken, environment, content, dic_info)
   end
 
+  def  pushTest_production_for_comment(device_token,content, dic_info)
+
+
+    logger.info "sending info to #{device_token} "
+    certificateFile =  "certificate_meet_pro.pem"
+    #content = params[:content].nil? ? "development environment testing":params[:content]
+    certificate =   certificateFile
+    devicetoken =   device_token
+    environment = "production"
+    pushNotification(certificate, devicetoken, environment, content, dic_info)
+  end
+
 
   def pushNotification(certificate_name, device_token, env, content, dic_info)
 
