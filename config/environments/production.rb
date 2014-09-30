@@ -74,7 +74,7 @@ Meets::Application.configure do
       :port => "25",
       :domain => "163.com",
       :authentication => :login,
-      :user_name => "appscreator",
+      :user_name => "waynewgl",
       :name => "时光胶囊app",
       :display_name => "时光胶囊app",
       :password => "zero06120707",
