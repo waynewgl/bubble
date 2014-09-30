@@ -10,7 +10,7 @@ class UserMailer < ActionMailer::Base
   def confirm(user,subject)
 
     @user = user
-    mail(:subject => "#{subject}", :to => user[:account], :from => '时光胶囊开发员@timeCapsule.com')
+    mail(:subject => "#{subject}", :to => user[:account])
 
   end
 end
