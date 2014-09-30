@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
 
     logger.info "sending info to #{device_token} "
-    certificateFile =  "certificate_meet_dev.pem"
+    certificateFile =  "certificate_dev.pem"
     #content = params[:content].nil? ? "development environment testing":params[:content]
     certificate =   certificateFile
     devicetoken =   device_token
@@ -18,8 +18,8 @@ class ApplicationController < ActionController::Base
   def  pushTest_production_for_comment(device_token,content, dic_info)
 
 
-    logger.info "sending info to #{device_token} "
-    certificateFile =  "certificate_meet_pro.pem"
+    logger.info "sending info to pro #{device_token} "
+    certificateFile =  "certificate_pro.pem"
     #content = params[:content].nil? ? "development environment testing":params[:content]
     certificate =   certificateFile
     devicetoken =   device_token
@@ -30,8 +30,6 @@ class ApplicationController < ActionController::Base
 
   def pushNotification(certificate_name, device_token, env, content, dic_info)
 
-    logger.info "test"
-
     if env == "development"
 
       s_gateway = "gateway.sandbox.push.apple.com"
@@ -40,6 +38,7 @@ class ApplicationController < ActionController::Base
       s_gateway = "gateway.push.apple.com"
     end
 
+    logger.info "getting here???"
 
     pusher = Grocer.pusher(
 
