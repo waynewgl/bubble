@@ -1,3 +1,5 @@
+#encoding: UTF-8
+
 Meets::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -73,6 +75,7 @@ Meets::Application.configure do
       :domain => "163.com",
       :authentication => :login,
       :user_name => "waynewgl",
+      :display_name => "时光胶囊app",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }
