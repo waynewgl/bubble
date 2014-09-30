@@ -434,7 +434,7 @@ class EventController < ApplicationController
 
         else
 
-          msg[:event] = event_timeCapsule.limit(params[:limit_count])
+          msg[:event] = event_timeCapsule.take(params[:limit_count].to_i)
         end
 
         msg[:event_count] = event_timeCapsule.count
