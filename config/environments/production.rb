@@ -72,11 +72,11 @@ Meets::Application.configure do
   config.action_mailer.smtp_settings = {
       :address => "smtp.163.com",
       :port => "25",
-      #:domain => "@163.com",
+      :domain => "163.com",
       :authentication => :login,
+      :user_name => "waynewgl",
       :name => "时光胶囊app",
       :display_name => "时光胶囊app",
-      :user_name => "appscreator@163.com",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }
