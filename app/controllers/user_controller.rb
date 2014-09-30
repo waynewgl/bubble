@@ -523,6 +523,7 @@ class UserController < ApplicationController
         msg[:passport_token] =  user.generate_token
         user.update_attribute(:passport_token, msg[:passport_token] )
         user.update_attribute("is_loggedin", "yes")
+        user.uuid = nil
         user.update_attribute(:uuid, params[:device_token])
         msg[:user] = user
         msg[:description] = "登陆成功"
