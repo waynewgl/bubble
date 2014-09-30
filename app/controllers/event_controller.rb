@@ -419,7 +419,9 @@ class EventController < ApplicationController
 
     if checkUser
 
-      event_timeCapsule = Event.where("user_id = ?", params[:user_id]).order("created_at desc")
+      event_timeCapsule = Event.find_by_sql("select * from events where user_id = #{params[:user_id]} order by (viewNum = 'false') desc, created_at desc")
+
+      #event_timeCapsule = Event.where("user_id = ?", params[:user_id]).order("created_at desc")
 
       if event_timeCapsule.count > 0
 
