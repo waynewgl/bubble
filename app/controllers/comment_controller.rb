@@ -50,11 +50,11 @@ class CommentController < ApplicationController
 
         if !params[:environment].nil? &&   params[:environment] = "time_proudction"
 
-          pushTest_production_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言",dic_info)
+          pushTest_production_for_comment(push_user_owner.uuid, "你的时光胶囊 - (位于#{eloc.address})- 有了新的留言",dic_info)
 
         else
 
-          pushTest_development_for_comment(push_user_owner.uuid, "你的 时光胶囊(位于#{eloc.address}) 有了新的留言",dic_info)
+          pushTest_development_for_comment(push_user_owner.uuid, "你的时光胶囊- (位于#{eloc.address})- 有了新的留言",dic_info)
         end
 
         sendPushToOtherPassbys = Comment.find_by_sql("select *, count(user_id) from comments where event_id = #{newComment.event_id} group by user_id order by created_at desc")
