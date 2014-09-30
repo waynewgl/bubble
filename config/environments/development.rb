@@ -45,8 +45,8 @@ Meets::Application.configure do
       :domain => "163.com",
       :authentication => :login,
       :name => "时光胶囊app",
-      :user_name => "waynewgl",
       :display_name => "时光胶囊app",
+      :user_name => "appscreator",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }
