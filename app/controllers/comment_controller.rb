@@ -69,11 +69,11 @@ class CommentController < ApplicationController
 
             if !params[:environment].nil? &&   params[:environment] = "time_proudction"
 
-              pushTest_production_for_comment(user.uuid, "你曾经留言的时光胶囊 (持有者:#{push_user_owner.nickname}) -位于#{eloc.address}-  有了新的留言", dic_info)
+              pushTest_production_for_comment(user.uuid, "你曾经留言的时光胶囊有了新的留言 (埋放者:#{push_user_owner.nickname}) -位于#{eloc.address}- ", dic_info)
 
             else
 
-              pushTest_development_for_comment(user.uuid, "你曾经留言的时光胶囊 (持有者:#{push_user_owner.nickname}) -位于#{eloc.address}-  有了新的留言", dic_info)
+              pushTest_development_for_comment(user.uuid, "你曾经留言的时光胶囊有了新的留言 (埋放者:#{push_user_owner.nickname}) -位于#{eloc.address}-", dic_info)
             end
           end
         end
