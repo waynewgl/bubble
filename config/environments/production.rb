@@ -72,7 +72,7 @@ Meets::Application.configure do
       :port => "25",
       :domain => "163.com",
       :authentication => :login,
-      :user_name => "waynewgl",
+      :user_name => "timecapsules",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }
