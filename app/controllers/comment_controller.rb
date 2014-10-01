@@ -47,6 +47,7 @@ class CommentController < ApplicationController
         dic_info = Hash.new
         dic_info[:event_id] =  newComment.event_id
         dic_info[:user_id] =  push_user_owner.id
+        dic_info[:sender_id] =  params[:user_id]
 
         if !params[:environment].nil? &&   params[:environment] = "time_proudction"
 
