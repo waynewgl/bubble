@@ -40,12 +40,12 @@ Meets::Application.configure do
   ActionMailer::Base.delivery_method = :smtp
 
   config.action_mailer.smtp_settings = {
-      :address => "smtp.sina.com",
+      :address => "smtp.126.com",
       :port => "25",
-      :domain => "sina.com",
+      :domain => "126.com",
       :authentication => :login,
       :name => "时光胶囊app",
-      :user_name => "appcreator",
+      :user_name => "appscreator",
       :display_name => "时光胶囊app",
       :password => "zero06120707",
       :enable_starttls_auto => true

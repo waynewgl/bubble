@@ -1,8 +1,7 @@
 #encoding: UTF-8
 
 class UserMailer < ActionMailer::Base
-  default from: "appcreator@sina.com"
-
+  default from: "appscreator@126.com"
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #
