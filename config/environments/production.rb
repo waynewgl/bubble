@@ -70,11 +70,11 @@ Meets::Application.configure do
   ActionMailer::Base.delivery_method = :smtp
 
   config.action_mailer.smtp_settings = {
-      :address => "smtp.126.com",
+      :address => "smtp.sina.com",
       :port => "25",
-      :domain => "126.com",
+      :domain => "sina.com",
       :authentication => :login,
-      :user_name => "appscreator",
+      :user_name => "appcreator",
       :name => "时光胶囊app",
       :display_name => "时光胶囊app",
       :password => "zero06120707",
