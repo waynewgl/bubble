@@ -419,7 +419,7 @@ class EventController < ApplicationController
 
     if checkUser
 
-      if params[:isOwnerCheck].nil?
+      if params[:isOwnerCheck].nil? ||  params[:isOwnerCheck] = "no" || params[:isOwnerCheck].blank?
 
         event_timeCapsule = Event.where("user_id = ?", params[:user_id]).order("created_at desc")
       else
