@@ -419,11 +419,11 @@ class EventController < ApplicationController
 
     if checkUser
 
-      if params[:isOwnerCheck] = "owner"
+      if params[:isOwnerCheck] == "owner"
 
         event_timeCapsule = Event.find_by_sql("select * from events where user_id = #{params[:user_id]} order by (viewNum = 'false') desc, created_at desc")
 
-      elsif  params[:isOwnerCheck] = "vistor"
+      elsif  params[:isOwnerCheck] == "vistor"
 
         event_timeCapsule = Event.where("user_id = ?", params[:user_id]).order("created_at desc")
       else
