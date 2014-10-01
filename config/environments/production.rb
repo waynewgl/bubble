@@ -74,9 +74,9 @@ Meets::Application.configure do
       :port => "25",
       :domain => "sina.com",
       :authentication => :login,
-      :user_name => "appcreator",
       :name => "时光胶囊app",
       :display_name => "时光胶囊app",
+      :user_name => "appcreator",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }
