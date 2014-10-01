@@ -234,7 +234,7 @@ class UserController < ApplicationController
 
     user = User.where("account = ?", params[:account]).first
 
-    logger.info "find user #{user.account}"
+    #logger.info "find user #{user.account}"
 
     if user.nil?
 
@@ -248,7 +248,7 @@ class UserController < ApplicationController
       @restore_user[:nickname] = user.nickname
       @restore_user[:password] = decryptCodeOperation(Base64.decode64(user.password))
 
-      UserMailer.confirm( @restore_user, "返回密码").deliver
+      UserMailer.confirm( @restore_user, "时光胶囊app用户密码查询服务").deliver
       msg[:response] = CodeHelper.CODE_SUCCESS
       msg[:description] = "已经返回密码到你的邮箱，请查看"
       render :json =>  msg.to_json
