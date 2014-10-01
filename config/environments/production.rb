@@ -70,16 +70,17 @@ Meets::Application.configure do
   ActionMailer::Base.delivery_method = :smtp
 
   config.action_mailer.smtp_settings = {
-      :address => "smtp.163.com",
+      :address => "smtp.sina.com",
       :port => "25",
-      :domain => "163.com",
+      :domain => "sina.com",
       :authentication => :login,
-      :user_name => "appscreator",
       :name => "时光胶囊app",
+      :user_name => "appcreator",
       :display_name => "时光胶囊app",
       :password => "zero06120707",
       :enable_starttls_auto => true
   }
+
 
   ActionMailer::Base.default :content_type => "text/html"
 end
