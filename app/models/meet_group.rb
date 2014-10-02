@@ -21,7 +21,7 @@ class MeetGroup < ActiveRecord::Base
 
     if  self.address.nil?  || self.address == "<null>"
 
-      return ""
+      return "未知地址"
     else
 
       return self.address
