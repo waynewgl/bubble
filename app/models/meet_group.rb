@@ -19,7 +19,7 @@ class MeetGroup < ActiveRecord::Base
 
   def checkAddress
 
-    if  self.address.nil?
+    if  self.address.nil?  || self.address == "<null>"
 
       return ""
     else
