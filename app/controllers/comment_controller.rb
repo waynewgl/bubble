@@ -38,7 +38,7 @@ class CommentController < ApplicationController
 
         if ownerEvent.user_id !=   params[:user_id]
 
-          ownerEvent.update_attribute(:viewNum, 'false')
+          ownerEvent.update_attribute(:viewNum, "isNotViewed")
         end
 
         push_user_owner = User.find_by_id(ownerEvent.user_id)            # get the event creator

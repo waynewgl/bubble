@@ -130,7 +130,7 @@ class EventController < ApplicationController
     if checkUser
 
       event_view = Event.find_by_id(params[:event_id])
-      event_view.update_attribute(:viewNum, 'isViewed')
+      event_view.update_attribute(:viewNum, "isViewed")
     end
   end
 
