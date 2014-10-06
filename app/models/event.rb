@@ -22,7 +22,7 @@ class Event < ActiveRecord::Base
         content: self.content,
         viewNum: self.checkViewNum,
         post_user: self.post_user,
-        post_time: self.updated_at.localtime,
+        post_time: self.created_at.localtime,
         event_image: self.event_images,
         event_location: self.getEventLocations,
         comment_count: self.comments.count
