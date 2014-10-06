@@ -14,6 +14,11 @@ module CodeHelper
     return 10.0
   end
 
+  def self.TIME_CAPSULE_CAPACITY
+
+    return 200
+  end
+
 
   def self.CODE_SUCCESS
 
