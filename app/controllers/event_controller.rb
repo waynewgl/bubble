@@ -250,6 +250,7 @@ class EventController < ApplicationController
         msg[:description] = "返回事件成功"
         msg[:user_distance] = CodeHelper.USER_DISTANCE
         msg[:distance_update_meter] = CodeHelper.DISTANCE_METER_UPDATE
+        msg[:capsule_capacity] = CodeHelper.TIME_CAPSULE_CAPACITY
 
         if params[:limit_count].nil? || params[:limit_count].blank?
 
