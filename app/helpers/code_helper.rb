@@ -27,6 +27,14 @@ module CodeHelper
     return @response
   end
 
+  def self.CODE_ADMIN_OPEN
+
+    @response[:code] = "0707"
+    @response[:desc] = "操作成功"
+    return @response
+  end
+
+
   def self.CODE_FAIL
 
     @response[:code] = "222"

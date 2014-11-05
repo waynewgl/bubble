@@ -38,5 +38,6 @@ production:
   database: Meets_production
   pool: 5
   username: root
-  password:
-  socket: /tmp/mysql.sock
+  password: 0guiwei
+  host: localhost
+

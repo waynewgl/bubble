@@ -7,7 +7,6 @@ class BlackList < ActiveRecord::Base
         user_id: self.user_id,
         stranger_id: self.stranger_id,
         stranger: self.getStrangerInfo
-
     }
   end
 
@@ -23,7 +22,9 @@ class BlackList < ActiveRecord::Base
 
       return user
     end
-
   end
+
+
+
 
 end

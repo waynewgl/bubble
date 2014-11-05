@@ -1,0 +1,25 @@
+
+<% for user in @user %>
+
+    <div>
+
+      <p> user: <%= user.account%>  <%= image_tag("#{user.avatar.url(:thumb)}")%> </p>
+
+       <div style="background-color: lightgray">
+
+         <% events = Event.where("user_id = ?", user.id) %>
+
+            <% for event in events %>
+
+               <p><%= event.id %> :  <%= event.content %>
+
+               <% for image in event.event_images %>
+
+                    <p> <%= image_tag("#{image.image.url(:thumb)}")%>  </p>
+               <% end %>
+            <% end %>
+       </div>
+
+    </div>
+
+<% end %>

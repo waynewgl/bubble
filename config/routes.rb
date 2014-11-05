@@ -112,6 +112,10 @@ Meets::Application.routes.draw do
 
   match 'help/index' => 'help#index'
 
+
+  match 'admin/index' => 'admin#index'
+  match 'admin/adminSetting' => 'admin#adminSetting'
+
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
