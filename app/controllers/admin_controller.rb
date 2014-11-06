@@ -70,7 +70,7 @@ class AdminController < ApplicationController
 
     end
 
-    msg[:response] =CodeHelper.CODE_ADMIN_OPEN
+    msg[:response] =CodeHelper.CODE_SUCCESS
     msg[:users] = users_Detail
 
     render :json =>  msg
