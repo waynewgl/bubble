@@ -62,7 +62,7 @@ class AdminController < ApplicationController
       user_dic[:sex] = user.sex
       user_dic[:image_url] = user.avatar.url.to_s
 
-      reportedCount = UserReport.find_by_sql("SELECT count(stranger_id) as reportedSum FROM user_reports WHERE user_id = #{user.id}").first
+      reportedCount = UserReport.find_by_sql("SELECT count(stranger_id) as reportedSum FROM user_reports WHERE stranger_id = #{user.id}").first
 
       user_dic[:reported_count] = reportedCount.reportedSum
 
