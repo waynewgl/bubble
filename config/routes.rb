@@ -115,6 +115,7 @@ Meets::Application.routes.draw do
 
   match 'admin/index' => 'admin#index'
   match 'admin/adminSetting' => 'admin#adminSetting'
+  match 'admin/getAllUsers' => 'admin#getAllUsers'
 
   # See how all your routes lay out with "rake routes"
 
