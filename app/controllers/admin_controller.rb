@@ -78,4 +78,73 @@ class AdminController < ApplicationController
 
   end
 
+
+  def deleteUser
+
+    if  params[:user_id].nil?   || params[:passport_token].nil? || params[:delete_user_id].nil?
+      arr_params = [ "user_id", "passport_token"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供 user id ,passport_token"
+      render :json =>  msg.to_json
+      return
+    end
+
+    if params[:auth_code] == "linguiwei19870707"
+
+      deleteUser = User.find_by_id(params[:delete_user_id])
+
+      deleteEvent = Event.where("user_id = ?", params[:delete_user_id])
+
+      if deleteEvent.count > 0
+
+        if  !deleteEvent.event_images.nil?  && deleteEvent.event_images.count > 0
+
+          for img in  deleteEvent.event_images
+
+            img = nil
+          end
+
+          deleteEvent.event_images.destroy_all()
+        end
+
+        if  !deleteEvent.comments.nil?
+
+          deleteEvent.comments.destroy_all()
+        end
+
+        if  !deleteEvent.e_location.nil?
+
+          deleteEvent.e_location.delete
+        end
+
+        if  !deleteEvent.report_events.nil?
+
+          deleteEvent.report_events.destroy_all()
+        end
+
+      end
+
+      if deleteEvent.destroy_all() && deleteUser.delete
+
+        msg[:response] = CodeHelper.CODE_SUCCESS
+        render :json =>  msg.to_json
+        return
+      else
+
+        msg[:response] = CodeHelper.CODE_FAIL
+        render :json =>  msg.to_json
+        return
+      end
+
+    else
+
+      arr_params = [ "code"]
+      msg[:response] = CodeHelper.CODE_MISSING_PARAMS(arr_params)
+      msg[:description] = "需要提供授权码"
+      render :json =>  msg.to_json
+      return
+    end
+
+  end
+
 end
