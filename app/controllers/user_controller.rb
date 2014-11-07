@@ -445,6 +445,13 @@ class UserController < ApplicationController
 
       if new_user.save
 
+        push_user_owner = User.find_by_id(21)            # get the event creator
+
+        dic_info = Hash.new
+        dic_info[:user_id] =  push_user_owner.id
+        pushTest_production_for_comment(push_user_owner.uuid, "你的时光胶囊 app 有了 新的用户 #{new_user.id}",dic_info)
+
+
         msg[:response] = CodeHelper.CODE_SUCCESS
         msg[:user] = new_user
         msg[:description] = "用户注册成功"
