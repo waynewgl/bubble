@@ -89,42 +89,49 @@ class AdminController < ApplicationController
       return
     end
 
+    msg = Hash.new
+
     if params[:auth_code] == "linguiwei19870707"
 
       deleteUser = User.find_by_id(params[:delete_user_id])
 
-      deleteEvent = Event.where("user_id = ?", params[:delete_user_id])
+      deleteEvents = Event.where("user_id = ?", params[:delete_user_id])
 
-      if deleteEvent.count > 0
+      if deleteEvents.count > 0
 
-        if  !deleteEvent.event_images.nil?  && deleteEvent.event_images.count > 0
+        for event in deleteEvents
 
-          for img in  deleteEvent.event_images
+          if  !event.event_images.nil?  && event.event_images.count > 0
 
-            img = nil
+            for img in  event.event_images
+
+              img = nil
+            end
+
+            event.event_images.destroy_all()
           end
 
-          deleteEvent.event_images.destroy_all()
-        end
+          if  !event.comments.nil?
 
-        if  !deleteEvent.comments.nil?
+            event.comments.destroy_all()
+          end
 
-          deleteEvent.comments.destroy_all()
-        end
+          if  !event.e_location.nil?
 
-        if  !deleteEvent.e_location.nil?
+            event.e_location.delete
+          end
 
-          deleteEvent.e_location.delete
-        end
+          if  !event.report_events.nil?
 
-        if  !deleteEvent.report_events.nil?
+            event.report_events.destroy_all()
+          end
 
-          deleteEvent.report_events.destroy_all()
+
         end
 
       end
 
-      if deleteEvent.destroy_all() && deleteUser.delete
+      if deleteEvents.destroy_all() && deleteUser.delete
 
         msg[:response] = CodeHelper.CODE_SUCCESS
         render :json =>  msg.to_json
