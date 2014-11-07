@@ -522,7 +522,7 @@ class UserController < ApplicationController
         user.passport_token = nil
         msg[:passport_token] =  user.generate_token
         user.update_attribute(:passport_token, msg[:passport_token] )
-        user.is_loggedin = "yes"
+        user.isLoggedin = "yes"
         user.save
         user.uuid = nil
         user.update_attribute(:uuid, params[:device_token])
@@ -569,7 +569,7 @@ class UserController < ApplicationController
       return
     else
 
-      user.is_loggedin = "no"
+      user.isLoggedin = "no"
       user.save
 
       msg[:response] = CodeHelper.CODE_SUCCESS
