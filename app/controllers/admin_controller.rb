@@ -132,7 +132,6 @@ class AdminController < ApplicationController
 
       if !deleteUser.nil?
 
-
         userCommentDelete = Comment.where("user_id = ?", deleteUser.id)
 
         if userCommentDelete.count > 0

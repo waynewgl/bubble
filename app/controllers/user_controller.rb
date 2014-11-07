@@ -522,7 +522,8 @@ class UserController < ApplicationController
         user.passport_token = nil
         msg[:passport_token] =  user.generate_token
         user.update_attribute(:passport_token, msg[:passport_token] )
-        user.update_attribute("is_loggedin", "yes")
+        user.is_loggedin = "yes"
+        user.save
         user.uuid = nil
         user.update_attribute(:uuid, params[:device_token])
         msg[:user] = user
@@ -568,7 +569,9 @@ class UserController < ApplicationController
       return
     else
 
-      user.update_attribute("is_loggedin", "no")
+      user.is_loggedin = "no"
+      user.save
+
       msg[:response] = CodeHelper.CODE_SUCCESS
       msg[:description] = "用户退出成功"
       render :json =>  msg.to_json
