@@ -132,7 +132,13 @@ class AdminController < ApplicationController
 
       if !deleteUser.nil?
 
-         deleteUser.comments.destroy_all()
+
+        userCommentDelete = Comment.where("user_id = ?", deleteUser.id)
+
+        if userCommentDelete.count > 0
+
+          userCommentDelete.destroy_all()
+        end
 
         meetGroupDelete = MeetGroup.where("user_id = ? or stranger_id = ?", deleteUser.id, deleteUser.id)
 
