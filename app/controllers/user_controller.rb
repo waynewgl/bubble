@@ -1086,7 +1086,7 @@ class UserController < ApplicationController
 
       for lo in usersAround
 
-        if lo.user.is_loggedin == "yes"
+        if lo.user.isLoggedin == "yes"
 
           filter_userAround << lo
         end
