@@ -126,9 +126,20 @@ class AdminController < ApplicationController
             event.report_events.destroy_all()
           end
 
-
         end
 
+      end
+
+      if !deleteUser.nil?
+
+         deleteUser.comments.destroy_all()
+
+        meetGroupDelete = MeetGroup.where("user_id = ? or stranger_id = ?", deleteUser.id, deleteUser.id)
+
+        if meetGroupDelete.count > 0
+
+          meetGroupDelete.destroy_all()
+        end
       end
 
       if deleteEvents.destroy_all() && deleteUser.delete

@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
 
   has_one :location
 
+  has_many :report_events
+
   #report event...
   has_many :report_events
   has_many :events, :through => :report_events
