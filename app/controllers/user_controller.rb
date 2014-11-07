@@ -1072,7 +1072,7 @@ class UserController < ApplicationController
 
     usersAround = Location.where("user_id != ?  and start_date >= ?  and start_date <= ? ", params[:user_id], time_from, time_to)
 
-    if usersAround.nil?
+    if usersAround.count < 0
 
       msg[:response] = CodeHelper.CODE_FAIL
       msg[:description] = "没有周边用户"
