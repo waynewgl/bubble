@@ -59,7 +59,7 @@ class AdminController < ApplicationController
       user_dic[:id] = user.id
       user_dic[:nickname]  = user.nickname
       user_dic[:account]  = user.account
-      user_dic[:is_logged] = user.is_loggedin
+      user_dic[:is_logged] = user.isLoggedin
       user_dic[:sex] = user.sex
       user_dic[:image_url] = user.avatar.url.to_s
 
